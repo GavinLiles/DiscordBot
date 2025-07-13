@@ -16,8 +16,9 @@ async def on_message(message):
     if message.author == client.user:
         return
 
-    if message.content.startswith('$hello'):
-        await message.channel.send('Hello!')
-        await message.channel.send('next')
+    if message.attachments:
+        for attachment in message.attachments:
+            if attachment.filename.endswith('.toml'):
+                await message.channel.send('This is a TOML file!')
 
 client.run('')
