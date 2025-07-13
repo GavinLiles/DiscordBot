@@ -20,5 +20,10 @@ async def on_message(message):
         for attachment in message.attachments:
             if attachment.filename.endswith('.toml'):
                 await message.channel.send('This is a TOML file!')
+                infile = await attachment.read()
+                for line in infile.decode('utf-8').splitlines():
+                    await message.channel.send(line)
+
+
 
 client.run('')
