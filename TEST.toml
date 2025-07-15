@@ -1,7 +1,19 @@
-hI
-this
-is
-a
-test
-HI
-MOUSE
+# School classes configuration
+
+[[classes]]
+name = "Discord Bot"
+teacher = "Smith"
+room = "Valorant"
+students = ["Gavin", "Disc", "Wendy"]
+
+[[classes]]
+name = "Spud Buds"
+teacher = "Not Smith"
+room = "OpenCV"
+students = ["Jake", "Kenz", "Eliza"]
+
+[[classes]]
+name = "MortalFoes"
+teacher = "Evil Smith"
+room = "Minecraft"
+students = ["Wes", "Adrian"]

@@ -1,6 +1,9 @@
 # This example requires the 'message_content' intent.
 
 import discord
+import tomllib
+
+
 
 intents = discord.Intents.default()
 intents.message_content = True
@@ -15,14 +18,16 @@ async def on_ready():
 async def on_message(message):
     if message.author == client.user:
         return
-
     if message.attachments:
         for attachment in message.attachments:
             if attachment.filename.endswith('.toml'):
-                await message.channel.send('This is a TOML file!')
-                infile = await attachment.read()
-                for line in infile.decode('utf-8').splitlines():
-                    await message.channel.send(line)
+                toml_bytes = await attachment.read()
+                toml_bytes = await attachment.read()  # bytes from Discord attachment
+                try:
+                    data = tomllib.loads(toml_bytes)  # pass bytes directly
+                except Exception as e:
+                    await message.channel.send(f"Error parsing TOML: {e}")
+
 
 
 
