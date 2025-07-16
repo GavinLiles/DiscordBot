@@ -73,6 +73,7 @@ async def on_message(message):
                             for HardChannel in HardChannels:
                                 #Create a new text channel for the class
                                 await message.guild.create_text_channel(HardChannel, category=NewCategory)
+                            #Create a new voice channel for the class
                             await message.guild.create_voice_channel("General", category=NewCategory)
                             
                 except Exception as e:
