@@ -28,15 +28,26 @@ async def process_tml(message: discord.Message, SUPERADMINCHAT: str, SUPERADMINR
                     #if it is we should not create a new category
                     #We should discuss what we are going to do in this situation further but for now it will just skip it
                     if not existing:
+                        mentor = await message.guild.create_role(name=cls["name"] + " " + MentorRole, mentionable=True, color=discord.Color.orange())
+                        user = await message.guild.create_role(name=cls["name"], mentionable=True, color=discord.Color.green())
                         #Create a new category for the class
                         NewCategory = await message.guild.create_category(cls["name"])
-                        HardChannels = ["Admin","General", "Sources", "GitHub", "Offtopic"]
+                        await NewCategory.set_permissions(mentor, read_messages=True, send_messages=True, connect=True, speak=True)
+                        await NewCategory.set_permissions(user, read_messages=True, send_messages=True, connect=True, speak=True)
+                        await NewCategory.set_permissions(message.guild.default_role, read_messages=False, connect=False)
+
+                        HardChannels = ["General", "Sources", "GitHub", "Offtopic"]
                         for HardChannel in HardChannels:
                             #Create a new text channel for the class
                             await message.guild.create_text_channel(HardChannel, category=NewCategory)
+                        admin = await message.guild.create_text_channel("Admin", category=NewCategory)
+                        await admin.set_permissions(mentor, read_messages=True, send_messages=True, connect=True, speak=True)
+                        await admin.set_permissions(user, read_messages=False, send_messages=False, connect=False, speak=False)
                         #Create a new voice channel for the class
-                        await message.guild.create_voice_channel("General", category=NewCategory)
+                        await message.guild.create_voice_channel("General_1", category=NewCategory)
+                        await message.guild.create_voice_channel("General_2", category=NewCategory)
                         #create an admin and a user role here
+                        
                         
             except Exception as e:
                 await message.channel.send(f"Error parsing TOML: {e}")
