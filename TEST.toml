@@ -10,7 +10,7 @@ students = ["Gavin", "Disc", "Wendy"]
 name = "Spud Buds"
 teacher = "Not Smith"
 room = "OpenCV"
-students = ["Jake", "Kenz", "Eliza"]
+students = 23
 
 [[classes]]
 name = "MortalFoes"
