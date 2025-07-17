@@ -17,7 +17,7 @@ intents = discord.Intents.default()
 intents.message_content = True
 intents.guilds = True
 intents.guild_messages = True
-client = discord.Client(intents=intents)
+client = discord.Client(command_prefix = '!', intents=intents)
 
 # Event handlers
 @client.event
@@ -42,5 +42,5 @@ async def on_message(message):
     #Again we will move this to the bottom when more is added because realisitcly this command will only happen once a semester
     if issuper and message.attachments and message.channel.name == SUPERADMINCHAT:
         await SuperAdmin.process_tml(message, SUPERADMINCHAT, SUPERADMINROLE, MentorRole)
-
+    await message.channel.send(f"This is a test")
 client.run('') 
