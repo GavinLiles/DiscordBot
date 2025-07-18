@@ -43,7 +43,6 @@ async def on_message(message):
     #Have to check if any is faster then a for loop or another loop structure
     issuper = any(role.name == SUPERADMINROLE for role in message.author.roles)
 
-
     #Check if the message is in the super admin chat and is an attachment
     #Again we will move this to the bottom when more is added because realisitcly this command will only happen once a semester
     if issuper and message.attachments and message.channel.name == SUPERADMINCHAT:
@@ -78,11 +77,10 @@ async def Delete(ctx,*,message):
     await ctx.send("Channel does not exist")
 
 
-    
 
 
 
 
 
 
-bot.run('') 
+bot.run() 
