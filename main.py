@@ -83,4 +83,4 @@ async def Delete(ctx,*,message):
 
 
 
-bot.run() 
+bot.run(token) 
