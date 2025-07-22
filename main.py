@@ -21,6 +21,7 @@ intents = discord.Intents.default()
 intents.message_content = True
 intents.guilds = True
 intents.guild_messages = True
+intents.members = True
 handler = logging.FileHandler(filename='discord.log', encoding ='utf-8', mode='w')
 #client = discord.Client(intents=intents)
 bot = commands.Bot(command_prefix='!', intents = intents)
@@ -45,8 +46,29 @@ async def on_message(message):
 
     #Check if the message is in the super admin chat and is an attachment
     #Again we will move this to the bottom when more is added because realisitcly this command will only happen once a semester
-    if issuper and message.attachments and message.channel.name == SUPERADMINCHAT:
-        await SuperAdmin.process_tml(message, SUPERADMINCHAT, SUPERADMINROLE, MentorRole)
+    if message.channel.name == SUPERADMINCHAT and issuper:
+        if message.attachments:
+            await SuperAdmin.process_tml(message, SUPERADMINCHAT, SUPERADMINROLE, MentorRole)
+        elif message.content.startswith('delete'):
+            category = message.content.split(' ', 1)[1]
+            existing = discord.utils.get(message.guild.categories, name=category)
+            await message.channel.send("Are you sure you want to remove this category? (yes/no)")
+            if (await bot.wait_for('message', check=lambda m: m.author == message.author and m.channel == message.channel)).content == 'yes':
+                if existing:
+                    for channel in existing.channels:
+                        await channel.delete()
+                    await discord.utils.get(message.guild.roles, name=category + " " + MentorRole).delete()
+                    await discord.utils.get(message.guild.roles, name=category).delete()
+                    await existing.delete()
+        elif message.content.startswith('remove'):
+            category = message.content.split(' ', 1)[1]
+            role = discord.utils.get(message.guild.roles, name=category)
+            await message.channel.send("Are you sure you want to remove the role? (yes/no)")
+            if (await bot.wait_for('message', check=lambda m: m.author == message.author and m.channel == message.channel)).content == 'yes':
+                for member in message.guild.members:
+                    if role in member.roles:
+                        await member.remove_roles(role)
+
     await bot.process_commands(message)
 
 @bot.command()
