@@ -68,7 +68,6 @@ async def on_message(message):
                 for member in message.guild.members:
                     if role in member.roles:
                         await member.remove_roles(role)
-    await bot.process_commands(message)
 
      #checking link setting
     link_allowed = link_control.get(message.guild.id, True) #default is true, allowing links
@@ -76,6 +75,7 @@ async def on_message(message):
         await message.delete()
         await message.channel.send(f"{message.author.mention} links are currently disabled.")
 
+    await bot.process_commands(message)
 
 
 @bot.command()
