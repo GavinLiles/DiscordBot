@@ -68,8 +68,15 @@ async def on_message(message):
                 for member in message.guild.members:
                     if role in member.roles:
                         await member.remove_roles(role)
-
     await bot.process_commands(message)
+
+     #checking link setting
+    link_allowed = link_control.get(message.guild.id, True) #default is true, allowing links
+    if not link_allowed and ('https://'in message.content or 'http://' in message.content): 
+        await message.delete()
+        await message.channel.send(f"{message.author.mention} links are currently disabled.")
+
+
 
 @bot.command()
 async def Create(ctx,*, message):
@@ -98,8 +105,15 @@ async def Delete(ctx,*,message):
             return
     await ctx.send("Channel does not exist")
 
+link_control = {}
 
-
+@bot.command()
+@commands.has_role(SUPERADMINROLE) # makes sure only admin can use this command
+async def links(ctx, setting: str):
+    if setting.lower() == 'off':
+        link_control[ctx.guild.id] = False
+    elif setting.lower() == 'on':
+        link_control[ctx.guild.id] = True
 
 
 
