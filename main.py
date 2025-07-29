@@ -108,12 +108,31 @@ async def Delete(ctx,*,message):
 link_control = {}
 
 @bot.command()
-@commands.has_role(SUPERADMINROLE) # makes sure only admin can use this command
 async def links(ctx, setting: str):
-    if setting.lower() == 'off':
+    if ctx.channel.name != 'admin':
+        await ctx.send("Wrong channel")
+        return
+    elif setting.lower() == 'off':
         link_control[ctx.guild.id] = False
     elif setting.lower() == 'on':
         link_control[ctx.guild.id] = True
+
+# admin must be in the chat to clear messages
+@bot.command()
+async def Clear(ctx, amount:str): # clears a number of messages
+    if amount.lower() == 'all':
+        await ctx.channel.purge()
+        return
+    else:
+        if not amount.isdigit():
+            await ctx.send("Please enter a whole number e.g (!clear 100) or use 'all.'")
+            return
+        amount = int(amount)
+        if amount == 0:
+            await ctx.send("Please enter number that is greater than 0.")
+            return
+        else:
+            await ctx.channel.purge(limit = amount + 1) # +1 to include the bot command
 
 
 
