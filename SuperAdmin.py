@@ -27,6 +27,7 @@ async def process_tml(message: discord.Message, SUPERADMINCHAT: str, SUPERADMINR
                     existing = discord.utils.get(message.guild.categories, name=cls["name"])
                     #if it is we should not create a new category
                     #We should discuss what we are going to do in this situation further but for now it will just skip it
+                    #update it replace merge it 
                     if not existing:
                         mentor = await message.guild.create_role(name=cls["name"] + " " + MentorRole, mentionable=True, color=discord.Color.orange())
                         user = await message.guild.create_role(name=cls["name"], mentionable=True, color=discord.Color.green())
