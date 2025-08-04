@@ -1,0 +1,4 @@
+INFO:discord.client:logging in using static token
+INFO:slack_bolt.AsyncApp:A new session (s_138305681271) has been established
+INFO:slack_bolt.AsyncApp:Bolt app is running!
+INFO:discord.gateway:Shard ID None has connected to Gateway (Session ID: 13ffb623d00a1563f010720fdd12959a).
