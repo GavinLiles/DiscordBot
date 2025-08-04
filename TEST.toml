@@ -3,18 +3,17 @@
 [[classes]]
 name = "Discord Bot"
 mentor = 1
-slack: ""
-room = "Valorant"
-students = 
+slack = ""
+students = 20
 
 [[classes]]
 name = "Spud Buds"
-teacher = "Not Smith"
-room = "OpenCV"
-students = 23
+mentor = 1
+slack = "C098XJU0SEQ"
+students = 20
 
 [[classes]]
 name = "MortalFoes"
-teacher = "Evil Smith"
-room = "Minecraft"
-students = ["Wes", "Adrian"]
+mentor = 1
+slack = ""
+students = 20

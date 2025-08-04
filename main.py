@@ -3,17 +3,16 @@ import tomllib
 import logging
 import asyncio
 import discord
+
 from discord.ext import commands
 from dotenv import load_dotenv
 
 import SuperAdmin
 import Control
-from slack import init_slack_app, get_slack_app, get_socket_handler
+from slack import init_slack_app, get_slack_app, get_socket_handler, get_channel_map, load_channel_map
 
-# Load environment variables
 load_dotenv()
 
-# Tokens and config from environment
 DISCORD_TOKEN = os.getenv("DISCORD_TOKEN")
 SLACK_TOKEN = os.getenv("SLACK_TOKEN")
 SLACK_APP_TOKEN = os.getenv("SLACK_APP_TOKEN")
@@ -21,7 +20,6 @@ SUPERADMINCHAT = os.getenv("SUPERADMINCHAT", "SUPERADMINCHAT")
 SUPERADMINROLE = os.getenv("SUPERADMINROLE", "SuperAdmin")
 MENTORROLE = os.getenv("MentorRole", "Mentor")
 
-# Discord bot setup
 intents = discord.Intents.default()
 intents.message_content = True
 intents.guilds = True
@@ -31,34 +29,14 @@ intents.members = True
 bot = commands.Bot(command_prefix="!", intents=intents)
 link_control = {}
 
-# Logging
 logging.basicConfig(filename="discord.log", encoding="utf-8", level=logging.INFO)
 
-# Load channel map
-try:
-    with open("channel_map.toml", "rb") as f:
-        config = tomllib.load(f)
-except Exception as e:
-    print("Failed to load channel map:", e)
-    config = {}
-
-CHANNEL_MAP = {
-    slack_id: discord_id
-    for slack_id, discord_id in config.get("channels", {}).items()
-}
-CHANNEL_MAP.update({
-    discord_id: slack_id
-    for slack_id, discord_id in config.get("channels", {}).items()
-})
-
-# Initialize Slack app
-slack_app = init_slack_app(SLACK_TOKEN, bot, CHANNEL_MAP)
-
+load_channel_map()
+slack_app = init_slack_app(SLACK_TOKEN, bot, get_channel_map())
 
 @bot.event
 async def on_ready():
     print(f"Logged in as {bot.user}")
-
 
 @bot.event
 async def on_message(message):
@@ -66,7 +44,7 @@ async def on_message(message):
         return
 
     discord_channel_id = str(message.channel.id)
-    slack_channel_id = CHANNEL_MAP.get(discord_channel_id)
+    slack_channel_id = get_channel_map().get(discord_channel_id)
 
     if slack_channel_id:
         await get_slack_app().client.chat_postMessage(
@@ -74,18 +52,15 @@ async def on_message(message):
             text=f"(Discord) {message.author.name}: {message.content}"
         )
 
-    # Handle SuperAdmin commands
     if message.channel.name == SUPERADMINCHAT and any(role.name == SUPERADMINROLE for role in message.author.roles):
         await handle_superadmin_commands(message)
 
-    # Check for links
     if not link_control.get(message.guild.id, True):
         if "http://" in message.content or "https://" in message.content:
             await message.delete()
             await message.channel.send(f"{message.author.mention} links are currently disabled.")
 
     await bot.process_commands(message)
-
 
 async def handle_superadmin_commands(message):
     if message.attachments:
@@ -115,7 +90,6 @@ async def handle_superadmin_commands(message):
                 if role in member.roles:
                     await member.remove_roles(role)
 
-
 @bot.command()
 async def Create(ctx, *, name):
     if ctx.channel.name != "admin":
@@ -129,7 +103,6 @@ async def Create(ctx, *, name):
 
     await ctx.guild.create_text_channel(name, category=category)
     await ctx.send(f"{name} created")
-
 
 @bot.command()
 async def Delete(ctx, *, name):
@@ -146,7 +119,6 @@ async def Delete(ctx, *, name):
 
     await ctx.send("Channel does not exist")
 
-
 @bot.command()
 async def links(ctx, setting: str):
     if ctx.channel.name != "admin":
@@ -155,7 +127,6 @@ async def links(ctx, setting: str):
 
     link_control[ctx.guild.id] = setting.lower() == "on"
     await ctx.send(f"Links have been turned {'on' if setting.lower() == 'on' else 'off'}.")
-
 
 @bot.command()
 async def Clear(ctx, amount: str):
@@ -173,13 +144,11 @@ async def Clear(ctx, amount: str):
     else:
         await ctx.channel.purge(limit=count + 1)
 
-
 async def start_bridge():
     socket_handler = get_socket_handler(SLACK_APP_TOKEN)
     discord_task = asyncio.create_task(bot.start(DISCORD_TOKEN))
     slack_task = asyncio.create_task(socket_handler.start_async())
     await asyncio.gather(discord_task, slack_task)
-
 
 if __name__ == "__main__":
     asyncio.run(start_bridge())

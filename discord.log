@@ -2,3 +2,19 @@ INFO:discord.client:logging in using static token
 INFO:slack_bolt.AsyncApp:A new session (s_138305681271) has been established
 INFO:slack_bolt.AsyncApp:Bolt app is running!
 INFO:discord.gateway:Shard ID None has connected to Gateway (Session ID: 13ffb623d00a1563f010720fdd12959a).
+INFO:discord.client:logging in using static token
+INFO:slack_bolt.AsyncApp:A new session (s_132089722743) has been established
+INFO:slack_bolt.AsyncApp:Bolt app is running!
+INFO:discord.gateway:Shard ID None has connected to Gateway (Session ID: f0628e7ce729e102a862e581514caba9).
+INFO:discord.client:logging in using static token
+INFO:slack_bolt.AsyncApp:A new session (s_106366224268) has been established
+INFO:slack_bolt.AsyncApp:Bolt app is running!
+INFO:discord.gateway:Shard ID None has connected to Gateway (Session ID: 81f6e23b75d13d29b356859063ccc10b).
+INFO:discord.client:logging in using static token
+INFO:slack_bolt.AsyncApp:A new session (s_147724879756) has been established
+INFO:slack_bolt.AsyncApp:Bolt app is running!
+INFO:discord.gateway:Shard ID None has connected to Gateway (Session ID: 0b2faa92a13a1badda23678e0cc4d47a).
+INFO:discord.client:logging in using static token
+INFO:slack_bolt.AsyncApp:A new session (s_100695762849) has been established
+INFO:slack_bolt.AsyncApp:Bolt app is running!
+INFO:discord.gateway:Shard ID None has connected to Gateway (Session ID: 0c22dcb0093c6f306ec8caa09be3300c).
