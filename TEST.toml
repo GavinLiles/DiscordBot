@@ -2,9 +2,10 @@
 
 [[classes]]
 name = "Discord Bot"
-teacher = "Smith"
+mentor = 1
+slack: ""
 room = "Valorant"
-students = ["Gavin", "Disc", "Wendy"]
+students = 
 
 [[classes]]
 name = "Spud Buds"

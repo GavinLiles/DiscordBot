@@ -4,48 +4,80 @@ import tomllib
 import SuperAdmin
 import Control
 import logging
-from dotenv import load_dotenv
-
-from dotenv import load_dotenv
+import asyncio
 import os
-load_dotenv()
-token = os.getenv('DISCORD_TOKEN')
-# Environment variables 
+from dotenv import load_dotenv
+from slack_bolt.async_app import AsyncApp
+from slack_bolt.adapter.socket_mode.aiohttp import AsyncSocketModeHandler
 
-SUPERADMINCHAT=os.getenv('SUPERADMINCHAT', 'SUPERADMINCHAT')
-SUPERADMINROLE=os.getenv('SUPERADMINROLE', 'SuperAdmin')
-MentorRole=os.getenv('MentorRole', 'Mentor')
-#discord intents
-#Basically what the bot is allowed to do in the server
+load_dotenv()
+token = os.getenv("DISCORD_TOKEN")
+SLACK_TOKEN = os.getenv("SLACK_TOKEN")
+SLACK_APP_TOKEN = os.getenv("SLACK_APP_TOKEN")
+SUPERADMINCHAT = os.getenv("SUPERADMINCHAT", "SUPERADMINCHAT")
+SUPERADMINROLE = os.getenv("SUPERADMINROLE", "SuperAdmin")
+MentorRole = os.getenv("MentorRole", "Mentor")
+
 intents = discord.Intents.default()
 intents.message_content = True
 intents.guilds = True
 intents.guild_messages = True
 intents.members = True
-handler = logging.FileHandler(filename='discord.log', encoding ='utf-8', mode='w')
-#client = discord.Client(intents=intents)
-bot = commands.Bot(command_prefix='!', intents = intents)
 
-# Event handlers
+handler = logging.FileHandler(filename="discord.log", encoding="utf-8", mode="w")
+bot = commands.Bot(command_prefix="!", intents=intents)
+link_control = {}
+
+# Load channel map
+try:
+    with open("channel_map.toml", "rb") as f:
+        config = tomllib.load(f)
+except Exception as e:
+    print(e)
+
+CHANNEL_MAP = {}
+for slack_id, discord_id in config.get("channels", {}).items():
+    CHANNEL_MAP[slack_id] = discord_id
+    CHANNEL_MAP[discord_id] = slack_id
+
+# Slack setup
+slack_app = AsyncApp(token=SLACK_TOKEN)
+
+@slack_app.event("message")
+async def handle_slack_message(event, say):
+    if "bot_id" in event:
+        return  # skip bot messages
+    slack_channel = event["channel"]
+    discord_channel_id = CHANNEL_MAP.get(slack_channel)
+    if discord_channel_id:
+        channel = bot.get_channel(int(discord_channel_id))
+        if channel:
+            user_id = event.get("user", "unknown")
+            text = event.get("text", "")
+            try:
+                user_info = await slack_app.client.users_info(user=user_id)
+                profile = user_info["user"]["profile"]
+                display_name = profile.get("display_name_normalized") or profile.get("real_name_normalized") or user_id
+            except Exception as e:
+                print(f"Failed to fetch user info: {e}")
+                display_name = user_id
+
+            await channel.send(f"(Slack) {display_name}: {text}")
+
 @bot.event
-#On ready is called on bootup
 async def on_ready():
-    print(f'We have logged in as {bot.user}')
+    print(f"We have logged in as {bot.user}")
 
 @bot.event
-#On message is called everytime a message is sent in a discord with this bot
 async def on_message(message):
-    #ignore messages sent by the bot itself
     if message.author == bot.user:
         return
-    
-    #Check if the message is sent by a super admin should be moved lower when we have more built up for efficeny
-    #We use any()) because the roles a user has is a list so you cant just  do message.author.role == SUPERADMINROLE
-    #Have to check if any is faster then a for loop or another loop structure
-    issuper = any(role.name == SUPERADMINROLE for role in message.author.roles)
+    discord_channel_id = str(message.channel.id)
+    slack_channel_id = CHANNEL_MAP.get(discord_channel_id)
+    if slack_channel_id:
+        await slack_app.client.chat_postMessage(channel=slack_channel_id, text=f"(Discord) {message.author.name}: {message.content}")
 
-    #Check if the message is in the super admin chat and is an attachment
-    #Again we will move this to the bottom when more is added because realisitcly this command will only happen once a semester
+    issuper = any(role.name == SUPERADMINROLE for role in message.author.roles)
     if message.channel.name == SUPERADMINCHAT and issuper:
         if message.attachments:
             await SuperAdmin.process_tml(message, SUPERADMINCHAT, SUPERADMINROLE, MentorRole)
@@ -69,73 +101,18 @@ async def on_message(message):
                     if role in member.roles:
                         await member.remove_roles(role)
 
-     #checking link setting
-    link_allowed = link_control.get(message.guild.id, True) #default is true, allowing links
-    if not link_allowed and ('https://'in message.content or 'http://' in message.content): 
+    link_allowed = link_control.get(message.guild.id, True)
+    if not link_allowed and ('https://' in message.content or 'http://' in message.content):
         await message.delete()
         await message.channel.send(f"{message.author.mention} links are currently disabled.")
 
     await bot.process_commands(message)
 
+async def start_bridge():
+    socket_handler = AsyncSocketModeHandler(slack_app, SLACK_APP_TOKEN)
+    discord_task = asyncio.create_task(bot.start(token))
+    slack_task = asyncio.create_task(socket_handler.start_async())
+    await asyncio.gather(discord_task, slack_task)
 
-@bot.command()
-async def Create(ctx,*, message):
-    category = ctx.channel.category
-    if ctx.channel.name != 'admin':
-      await  ctx.send("Wrong channel")
-      return
-    if category:
-        for channel in category.text_channels:
-            if(message == str(channel)):
-                await ctx.send(f"{message} already exists!")
-                return
-    await ctx.guild.create_text_channel(message, category = ctx.channel.category)
-    await ctx.send(f"{message} created")
-
-@bot.command()
-async def Delete(ctx,*,message):
-    category = ctx.channel.category
-    if ctx.channel.name != 'admin':
-        await ctx.send("Wrong channel")
-        return
-    for channel in category.text_channels:
-        if(message == str(channel)):
-            await channel.delete()
-            ctx.send(f"{message} has been deleted")
-            return
-    await ctx.send("Channel does not exist")
-
-link_control = {}
-
-@bot.command()
-async def links(ctx, setting: str):
-    if ctx.channel.name != 'admin':
-        await ctx.send("Wrong channel")
-        return
-    elif setting.lower() == 'off':
-        link_control[ctx.guild.id] = False
-    elif setting.lower() == 'on':
-        link_control[ctx.guild.id] = True
-
-# admin must be in the chat to clear messages
-@bot.command()
-async def Clear(ctx, amount:str): # clears a number of messages
-    if amount.lower() == 'all':
-        await ctx.channel.purge()
-        return
-    else:
-        if not amount.isdigit():
-            await ctx.send("Please enter a whole number e.g (!clear 100) or use 'all.'")
-            return
-        amount = int(amount)
-        if amount == 0:
-            await ctx.send("Please enter number that is greater than 0.")
-            return
-        else:
-            await ctx.channel.purge(limit = amount + 1) # +1 to include the bot command
-
-
-
-
-
-bot.run(token) 
+if __name__ == "__main__":
+    asyncio.run(start_bridge())
