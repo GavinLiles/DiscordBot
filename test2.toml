@@ -1,7 +1,7 @@
 [[groups]]
 name = "Discord Bot"
-mentor = 1
-slack = ""
+mentor = 2
+slack = "C098XJU0SEQ"
 text_channels = "hi"
 voice_channels = "cool"
-students = 20
+students = 2

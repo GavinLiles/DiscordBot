@@ -183,6 +183,7 @@ async def process_tml(bot: discord.Client, message: discord.Message, SUPERADMINC
                             await message.channel.send("Time expired. Defaulting to `skip`.")
                         if user_choice == "merge":
                             existing_channel_names = [ch.name for ch in existing.channels]
+
                             extra_text_channels = [ch.strip() for ch in cls.get("text_channels", "").split(",") if ch.strip()]
                             for extra in extra_text_channels:
                                 if extra not in existing_channel_names:
@@ -192,6 +193,27 @@ async def process_tml(bot: discord.Client, message: discord.Message, SUPERADMINC
                             for extra in extra_voice_channels:
                                 if extra not in existing_channel_names:
                                     await message.guild.create_voice_channel(extra, category=existing)
+
+                            
+                            group_name = cls["name"]
+                            total_students = int(cls.get("students", 0))
+                            total_mentors = int(cls.get("mentor", 0))
+
+                            if os.path.exists(TOKENS):
+                                with open(TOKENS, "rb") as f:
+                                    token_data = tomllib.load(f)
+                            else:
+                                token_data = {}
+
+                            existing = token_data.get(group_name, {"roles": []})
+                            current_students = existing["roles"].count("student")
+                            current_mentors = existing["roles"].count("mentor")
+
+                            add_students = max(0, total_students - current_students)
+                            add_mentors = max(0, total_mentors - current_mentors)
+
+                            append_or_create_group(group_name, num_students=add_students, num_mentors=add_mentors)
+
                         elif user_choice == "replace":
                             category = discord.utils.get(message.guild.categories, name=cls["name"])
                             if category:

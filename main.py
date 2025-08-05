@@ -1,16 +1,20 @@
 import os
-import tomllib
 import logging
 import asyncio
 import discord
-
 from discord.ext import commands
 from dotenv import load_dotenv
-
 import SuperAdmin
-import Control
-from slack import init_slack_app, get_slack_app, get_socket_handler, get_channel_map, load_channel_map
 import Commands
+import tokens
+from slack import (
+    init_slack_app,
+    get_slack_app,
+    get_socket_handler,
+    get_channel_map,
+    load_channel_map,
+)
+
 
 load_dotenv()
 
@@ -20,6 +24,8 @@ SLACK_APP_TOKEN = os.getenv("SLACK_APP_TOKEN")
 SUPERADMINCHAT = os.getenv("SUPERADMINCHAT", "SUPERADMINCHAT")
 SUPERADMINROLE = os.getenv("SUPERADMINROLE", "SuperAdmin")
 MENTORROLE = os.getenv("MentorRole", "Mentor")
+TOKENSCHANNEL = os.getenv("TOKENSCHANNEL", "TokensChannel")
+TOKENS = os.getenv("TOKENS", "group_tokens.toml")
 
 intents = discord.Intents.default()
 intents.message_content = True
@@ -53,6 +59,9 @@ async def on_message(message):
             text=f"(Discord) {message.author.name}: {message.content}"
         )
 
+    if message.channel.name.lower() == TOKENSCHANNEL.lower():
+        await tokens.process_token(message, MENTORROLE)
+
     if message.channel.name == SUPERADMINCHAT and any(role.name == SUPERADMINROLE for role in message.author.roles):
         await handle_superadmin_commands(message)
 
@@ -66,26 +75,26 @@ async def on_message(message):
                     await message.channel.send(warning, delete_after=5)
                 except Exception as e:
                     print(f"Error deleting message or sending warning: {e}")
-                break 
+                break
+
     await bot.process_commands(message)
 
 async def handle_superadmin_commands(message):
     if message.attachments:
         await SuperAdmin.process_tml(bot, message, SUPERADMINCHAT, SUPERADMINROLE, MENTORROLE)
 
-
-#these are user input commands for SuperAdmin
+# SuperAdmin-only commands
 @bot.command()
 @commands.has_any_role("SuperAdmin")
 async def DeleteCategory(ctx, *, message):
     await Commands.DeleteCategory(ctx, message, bot, MENTORROLE)
-    
+
 @bot.command()
 @commands.has_any_role("SuperAdmin")
 async def RevokeRoles(ctx, *, message):
     await Commands.RevokeRoles(ctx, message, bot)
-    
-#These are user input commands for both Mentors and SuperAdmin
+
+# SuperAdmin and Mentor commands
 @bot.command()
 async def CreateTC(ctx, *, name):
     await Commands.CreateTC(ctx, name)
@@ -105,7 +114,7 @@ async def DeleteVC(ctx, *, name):
 @bot.command()
 @commands.has_any_role("SuperAdmin")
 async def Links(ctx, role_name: str, setting: str):
-    await Commands.Links(ctx, link_control,role_name,setting)
+    await Commands.Links(ctx, link_control, role_name, setting)
 
 @bot.command()
 @commands.has_any_role("SuperAdmin", "MENTORROLE")
@@ -114,7 +123,7 @@ async def Clear(ctx, amount: str):
 
 @bot.command()
 @commands.has_any_role("SuperAdmin")
-async def Remove(ctx, member: discord.Member=None, *, group_names=None):
+async def Remove(ctx, member: discord.Member = None, *, group_names = None):
     await Commands.Remove(ctx, member, group_names=group_names)
 
 async def start_bridge():
@@ -125,4 +134,3 @@ async def start_bridge():
 
 if __name__ == "__main__":
     asyncio.run(start_bridge())
-

@@ -1,8 +1,10 @@
 #Holds all the discord bot commands
 import discord
-
+import os
 from discord.ext import commands
 from dotenv import load_dotenv
+import tomllib
+import tomli_w
 import SuperAdmin
 #Creates a Voice channel
 async def CreateTC(ctx, name):
@@ -27,7 +29,9 @@ async def DeleteTC(ctx, name):
     category = ctx.channel.category
     #go through each text channel. If channel name matches name, delete channel and return
     for ch in category.text_channels:
-        if ch.name == name:
+        if ch.name == "general" or ch.name == "admin":
+            ctx.send(f"{name} is a protected channel")
+        elif ch.name == name:
             await ch.delete()
             await ctx.send(f"{name} has been deleted")
             return
@@ -109,6 +113,8 @@ async def DeleteCategory(ctx, message, bot, MENTORROLE):
             )
 
             if confirm.content.strip().lower() == "yes":
+                deleted_channel_ids = [str(ch.id) for ch in category.channels]  # Save IDs before deleting
+
                 # Delete all channels inside the category
                 for ch in category.channels:
                     await ch.delete()
@@ -140,6 +146,20 @@ async def DeleteCategory(ctx, message, bot, MENTORROLE):
                     category_name = message.strip()
                     SuperAdmin.delete_group_tokens(category_name)
                     print(f"Group tokens deleted for: {category_name}")
+
+                    # Remove Slack channel mappings
+                    slack_map_path = "channel_map.toml"
+                    if os.path.exists(slack_map_path):
+                        with open(slack_map_path, "rb") as f:
+                            data = tomllib.load(f)
+
+                        original = dict(data.get("channels", {}))
+                        updated = {k: v for k, v in original.items() if v not in deleted_channel_ids and k not in deleted_channel_ids}
+
+                        if updated != original:
+                            with open(slack_map_path, "wb") as f:
+                                f.write(tomli_w.dumps({"channels": updated}).encode("utf-8"))
+                            print(f"Removed Slack mappings for deleted Discord channels in '{message}'")
 
                     await ctx.send(f"Category '{message}' and all associated resources were deleted.")
                     return

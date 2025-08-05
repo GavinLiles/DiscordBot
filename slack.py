@@ -81,6 +81,10 @@ def update_channel_map(slack_id: str, discord_channel_id: str):
         with open(CHANNEL_MAP_FILE, "wb") as f:
             f.write(tomli_w.dumps(data).encode("utf-8"))
 
-        print(f"Mapped Slack {slack_id} to Discord {discord_channel_id}")
+        # Update the in-memory CHANNEL_MAP live
+        CHANNEL_MAP[slack_id] = discord_channel_id
+        CHANNEL_MAP[discord_channel_id] = slack_id
+
+        print(f"Mapped Slack {slack_id} to Discord {discord_channel_id} (live update)")
     except Exception as e:
         print(f"Error writing to channel map: {e}")

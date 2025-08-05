@@ -1053,3 +1053,151 @@ INFO:discord.client:logging in using static token
 INFO:slack_bolt.AsyncApp:A new session (s_97061718924) has been established
 INFO:slack_bolt.AsyncApp:Bolt app is running!
 INFO:discord.gateway:Shard ID None has connected to Gateway (Session ID: 337a83aba71b7d633e0a49b73d269ee9).
+INFO:discord.client:logging in using static token
+INFO:slack_bolt.AsyncApp:A new session (s_202444074871) has been established
+INFO:slack_bolt.AsyncApp:Bolt app is running!
+INFO:discord.gateway:Shard ID None has connected to Gateway (Session ID: c1244975fca4e487af25939ab2582c9a).
+INFO:discord.client:logging in using static token
+INFO:slack_bolt.AsyncApp:A new session (s_106271951735) has been established
+INFO:slack_bolt.AsyncApp:Bolt app is running!
+INFO:discord.gateway:Shard ID None has connected to Gateway (Session ID: 779d623ffbadf59778dc0b92df0735a9).
+INFO:discord.client:logging in using static token
+INFO:slack_bolt.AsyncApp:A new session (s_153618189175) has been established
+INFO:slack_bolt.AsyncApp:Bolt app is running!
+INFO:discord.gateway:Shard ID None has connected to Gateway (Session ID: 3958f90a98efd0625ac42f64f0e189cb).
+INFO:discord.client:logging in using static token
+INFO:slack_bolt.AsyncApp:A new session (s_136223653956) has been established
+INFO:slack_bolt.AsyncApp:Bolt app is running!
+INFO:discord.gateway:Shard ID None has connected to Gateway (Session ID: e9f6d89d4e316b738e14aa70cd316e6b).
+INFO:discord.client:logging in using static token
+INFO:slack_bolt.AsyncApp:A new session (s_165767105420) has been established
+INFO:slack_bolt.AsyncApp:Bolt app is running!
+INFO:discord.gateway:Shard ID None has connected to Gateway (Session ID: 18d70a20d3757c50864d6027c846c2fc).
+ERROR:discord.client:Ignoring exception in on_message
+Traceback (most recent call last):
+  File "C:\Users\Gavin Liles\AppData\Local\Programs\Python\Python313\Lib\site-packages\discord\client.py", line 481, in _run_event
+    await coro(*args, **kwargs)
+  File "C:\Users\Gavin Liles\Documents\codeproject\DiscordBot\DiscordBot\main.py", line 59, in on_message
+    data = tomllib.load(infile)
+  File "C:\Users\Gavin Liles\AppData\Local\Programs\Python\Python313\Lib\tomllib\_parser.py", line 63, in load
+    raise TypeError(
+        "File must be opened in binary mode, e.g. use `open('foo.toml', 'rb')`"
+    ) from None
+TypeError: File must be opened in binary mode, e.g. use `open('foo.toml', 'rb')`
+INFO:discord.client:logging in using static token
+INFO:slack_bolt.AsyncApp:A new session (s_162686880652) has been established
+INFO:slack_bolt.AsyncApp:Bolt app is running!
+INFO:discord.gateway:Shard ID None has connected to Gateway (Session ID: 4dfb32955ad2ed8686e5a3a5cd889590).
+ERROR:discord.client:Ignoring exception in on_message
+Traceback (most recent call last):
+  File "C:\Users\Gavin Liles\AppData\Local\Programs\Python\Python313\Lib\site-packages\discord\client.py", line 481, in _run_event
+    await coro(*args, **kwargs)
+  File "C:\Users\Gavin Liles\Documents\codeproject\DiscordBot\DiscordBot\main.py", line 60, in on_message
+    data = tomllib.load(infile)
+  File "C:\Users\Gavin Liles\AppData\Local\Programs\Python\Python313\Lib\tomllib\_parser.py", line 63, in load
+    raise TypeError(
+        "File must be opened in binary mode, e.g. use `open('foo.toml', 'rb')`"
+    ) from None
+TypeError: File must be opened in binary mode, e.g. use `open('foo.toml', 'rb')`
+INFO:discord.client:logging in using static token
+INFO:slack_bolt.AsyncApp:A new session (s_157471281036) has been established
+INFO:slack_bolt.AsyncApp:Bolt app is running!
+INFO:discord.gateway:Shard ID None has connected to Gateway (Session ID: 782b638db68140b9051713af9ca5cd9a).
+INFO:discord.client:logging in using static token
+INFO:slack_bolt.AsyncApp:A new session (s_120572672908) has been established
+INFO:slack_bolt.AsyncApp:Bolt app is running!
+INFO:discord.gateway:Shard ID None has connected to Gateway (Session ID: 672b0f29a799b34c2ddec7ebfb473cd1).
+INFO:discord.client:logging in using static token
+INFO:slack_bolt.AsyncApp:A new session (s_179203447692) has been established
+INFO:slack_bolt.AsyncApp:Bolt app is running!
+INFO:discord.gateway:Shard ID None has connected to Gateway (Session ID: 290c222ead3da8290703d98aba438c0f).
+INFO:discord.client:logging in using static token
+INFO:slack_bolt.AsyncApp:A new session (s_123376454540) has been established
+INFO:slack_bolt.AsyncApp:Bolt app is running!
+INFO:discord.gateway:Shard ID None has connected to Gateway (Session ID: 00bdc85c2c80584f6ea977b60f6e171b).
+ERROR:discord.client:Ignoring exception in on_message
+Traceback (most recent call last):
+  File "C:\Users\Gavin Liles\Documents\codeproject\DiscordBot\DiscordBot\main.py", line 109, in on_message
+    await message.delete()
+  File "C:\Users\Gavin Liles\AppData\Local\Programs\Python\Python313\Lib\site-packages\discord\message.py", line 1304, in delete
+    await self._state.http.delete_message(self.channel.id, self.id)
+  File "C:\Users\Gavin Liles\AppData\Local\Programs\Python\Python313\Lib\site-packages\discord\http.py", line 758, in request
+    raise NotFound(response, data)
+discord.errors.NotFound: 404 Not Found (error code: 10008): Unknown Message
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\Gavin Liles\AppData\Local\Programs\Python\Python313\Lib\site-packages\discord\client.py", line 481, in _run_event
+    await coro(*args, **kwargs)
+  File "C:\Users\Gavin Liles\Documents\codeproject\DiscordBot\DiscordBot\main.py", line 127, in on_message
+    await message.delete()
+  File "C:\Users\Gavin Liles\AppData\Local\Programs\Python\Python313\Lib\site-packages\discord\message.py", line 1304, in delete
+    await self._state.http.delete_message(self.channel.id, self.id)
+  File "C:\Users\Gavin Liles\AppData\Local\Programs\Python\Python313\Lib\site-packages\discord\http.py", line 758, in request
+    raise NotFound(response, data)
+discord.errors.NotFound: 404 Not Found (error code: 10008): Unknown Message
+INFO:discord.client:logging in using static token
+INFO:slack_bolt.AsyncApp:A new session (s_141550283660) has been established
+INFO:slack_bolt.AsyncApp:Bolt app is running!
+INFO:discord.gateway:Shard ID None has connected to Gateway (Session ID: 7790243a3f41594d046c2937d3dd8057).
+ERROR:discord.client:Ignoring exception in on_message
+Traceback (most recent call last):
+  File "C:\Users\Gavin Liles\Documents\codeproject\DiscordBot\DiscordBot\main.py", line 109, in on_message
+    await message.delete()
+  File "C:\Users\Gavin Liles\AppData\Local\Programs\Python\Python313\Lib\site-packages\discord\message.py", line 1304, in delete
+    await self._state.http.delete_message(self.channel.id, self.id)
+  File "C:\Users\Gavin Liles\AppData\Local\Programs\Python\Python313\Lib\site-packages\discord\http.py", line 758, in request
+    raise NotFound(response, data)
+discord.errors.NotFound: 404 Not Found (error code: 10008): Unknown Message
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\Gavin Liles\AppData\Local\Programs\Python\Python313\Lib\site-packages\discord\client.py", line 481, in _run_event
+    await coro(*args, **kwargs)
+  File "C:\Users\Gavin Liles\Documents\codeproject\DiscordBot\DiscordBot\main.py", line 123, in on_message
+    await message.delete()
+  File "C:\Users\Gavin Liles\AppData\Local\Programs\Python\Python313\Lib\site-packages\discord\message.py", line 1304, in delete
+    await self._state.http.delete_message(self.channel.id, self.id)
+  File "C:\Users\Gavin Liles\AppData\Local\Programs\Python\Python313\Lib\site-packages\discord\http.py", line 758, in request
+    raise NotFound(response, data)
+discord.errors.NotFound: 404 Not Found (error code: 10008): Unknown Message
+INFO:discord.client:logging in using static token
+INFO:slack_bolt.AsyncApp:A new session (s_154320554892) has been established
+INFO:slack_bolt.AsyncApp:Bolt app is running!
+INFO:discord.gateway:Shard ID None has connected to Gateway (Session ID: c82375fc14a55b3164ae9322af6f7cf8).
+ERROR:discord.client:Ignoring exception in on_message
+Traceback (most recent call last):
+  File "C:\Users\Gavin Liles\Documents\codeproject\DiscordBot\DiscordBot\main.py", line 109, in on_message
+    await message.delete()
+  File "C:\Users\Gavin Liles\AppData\Local\Programs\Python\Python313\Lib\site-packages\discord\message.py", line 1304, in delete
+    await self._state.http.delete_message(self.channel.id, self.id)
+  File "C:\Users\Gavin Liles\AppData\Local\Programs\Python\Python313\Lib\site-packages\discord\http.py", line 758, in request
+    raise NotFound(response, data)
+discord.errors.NotFound: 404 Not Found (error code: 10008): Unknown Message
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\Gavin Liles\AppData\Local\Programs\Python\Python313\Lib\site-packages\discord\client.py", line 481, in _run_event
+    await coro(*args, **kwargs)
+  File "C:\Users\Gavin Liles\Documents\codeproject\DiscordBot\DiscordBot\main.py", line 123, in on_message
+    await message.delete()
+  File "C:\Users\Gavin Liles\AppData\Local\Programs\Python\Python313\Lib\site-packages\discord\message.py", line 1304, in delete
+    await self._state.http.delete_message(self.channel.id, self.id)
+  File "C:\Users\Gavin Liles\AppData\Local\Programs\Python\Python313\Lib\site-packages\discord\http.py", line 758, in request
+    raise NotFound(response, data)
+discord.errors.NotFound: 404 Not Found (error code: 10008): Unknown Message
+INFO:discord.client:logging in using static token
+INFO:slack_bolt.AsyncApp:A new session (s_134919669644) has been established
+INFO:slack_bolt.AsyncApp:Bolt app is running!
+INFO:discord.gateway:Shard ID None has connected to Gateway (Session ID: 0806a178adf5ce5423f44bca503ae9a1).
+INFO:discord.client:logging in using static token
+INFO:slack_bolt.AsyncApp:A new session (s_141219422092) has been established
+INFO:slack_bolt.AsyncApp:Bolt app is running!
+INFO:discord.gateway:Shard ID None has connected to Gateway (Session ID: b9d3032c73699d52489279006fff284b).
+INFO:discord.client:logging in using static token
+INFO:slack_bolt.AsyncApp:A new session (s_125849153420) has been established
+INFO:slack_bolt.AsyncApp:Bolt app is running!
+INFO:discord.gateway:Shard ID None has connected to Gateway (Session ID: e3eabaf5a92cb5e1674a56da427f4c00).
