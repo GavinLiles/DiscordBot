@@ -1,0 +1,377 @@
+[["Discord Bot".tokens]]
+token = "5cd2c2b5051e8d455f62f583649ff3a5830972b91919657cf6dd39ee4504a825"
+index = 0
+role = "student"
+used = false
+
+[["Discord Bot".tokens]]
+token = "3199d7865f4c72140696fe6c924317f4850620ce3d5fd75ad10c6315f565a004"
+index = 1
+role = "student"
+used = false
+
+[["Discord Bot".tokens]]
+token = "552dffb0371311d3420034b110aa9c72fb938e37b3f6b74f198b424ee6198ef2"
+index = 2
+role = "student"
+used = false
+
+[["Discord Bot".tokens]]
+token = "3f1d6eeac4331a1d4c907b48eb214f9ca91b6f8e5b7b95e45658434848347ace"
+index = 3
+role = "student"
+used = false
+
+[["Discord Bot".tokens]]
+token = "59fe8cda4e75b2036e46dbd23de8fd1e80e0dbf232f806c16db7938dcbfd1f01"
+index = 4
+role = "student"
+used = false
+
+[["Discord Bot".tokens]]
+token = "0542912982a3e0cf6d693c1c541ed24ba5ab066cd6aace2893d045a9cace030b"
+index = 5
+role = "student"
+used = false
+
+[["Discord Bot".tokens]]
+token = "a8cc96c9ec4de9a55f78e0071171354ab29f0c207e802c1fbe2e32f4ce2e04b3"
+index = 6
+role = "student"
+used = false
+
+[["Discord Bot".tokens]]
+token = "d2f7e6183119899ec36dbe71798bddf7798a0a7f9cd8afedf56d411bce9c7e8a"
+index = 7
+role = "student"
+used = false
+
+[["Discord Bot".tokens]]
+token = "2d4f3a80464fb2dae08cd092f61d4c06e480fc57bffb3ba2faf20a7289a0ced2"
+index = 8
+role = "student"
+used = false
+
+[["Discord Bot".tokens]]
+token = "fb7ffeca0e2827a37a240d9990b7f72e235c017599e98ef27d4697c08a49f800"
+index = 9
+role = "student"
+used = false
+
+[["Discord Bot".tokens]]
+token = "03633bafaf6b4b60a86aeac0ab9ce79e9e014f5e067cc5c156f4fa6933184f70"
+index = 10
+role = "student"
+used = false
+
+[["Discord Bot".tokens]]
+token = "e61012feff93e6c5e3b7812167f0855b0209d5ff4cb818a00c93efb5b2edbbd8"
+index = 11
+role = "student"
+used = false
+
+[["Discord Bot".tokens]]
+token = "d0bd2a886f5e3d54c884d365461006c324be71a5fa3c988858c33673d04bdc48"
+index = 12
+role = "student"
+used = false
+
+[["Discord Bot".tokens]]
+token = "9097620e91f21d994d7b4ffebfcb3ccd18f55121403e0949c9f2d7387b1b4164"
+index = 13
+role = "student"
+used = false
+
+[["Discord Bot".tokens]]
+token = "6c902edc5fb3ba05c0aba4859e7f09e69162553279196262f6dfcc88030eb323"
+index = 14
+role = "student"
+used = false
+
+[["Discord Bot".tokens]]
+token = "f84420883875909ad8f8ab6942b39adc0e8f0e1d60d8b36908b354417bd6ac6d"
+index = 15
+role = "student"
+used = false
+
+[["Discord Bot".tokens]]
+token = "e070f7d3a7ff17f673e62722b17bafd4f77dc8d9fe5cac0633873d63b41f94b9"
+index = 16
+role = "student"
+used = false
+
+[["Discord Bot".tokens]]
+token = "74522f476eb0464375745678e7481c25440e7a8ce75260340033f943cbf5644f"
+index = 17
+role = "student"
+used = false
+
+[["Discord Bot".tokens]]
+token = "c562029d678babb7d7315df16feb14e93336b54c274ec7bf2ada852827a29031"
+index = 18
+role = "student"
+used = false
+
+[["Discord Bot".tokens]]
+token = "ae2c4cdb30b1f65e0ec45d7ca1320fc3910ad00a1db6b89fa88f0876a24267ac"
+index = 19
+role = "student"
+used = false
+
+[["Discord Bot".tokens]]
+token = "91a78cf41fb850c60045f9a2f8768402c2ccd20cad01350fa10a61c5ab278672"
+index = 0
+role = "mentor"
+used = false
+
+[["Spud Buds".tokens]]
+token = "4e4345a228f50627a4f934c72671d24d2087caa6fa60c0bff463c61bd755caa1"
+index = 0
+role = "student"
+used = false
+
+[["Spud Buds".tokens]]
+token = "d19b4efb193cf778a109f64c7a76cd0f22c63af66a66d1920ad8dc1207fa6a90"
+index = 1
+role = "student"
+used = false
+
+[["Spud Buds".tokens]]
+token = "d55268cf53309e79464a7a92e15b736e375dc2532c52bb631b80520bf956ce20"
+index = 2
+role = "student"
+used = false
+
+[["Spud Buds".tokens]]
+token = "eeb762a9e7d25dcf548fb6c47cda36cecea73b17e4c2912ac1ef9b0257a010ef"
+index = 3
+role = "student"
+used = false
+
+[["Spud Buds".tokens]]
+token = "6d56078cedaa93187e0c867fb83e68c079a0c9e533d01081b7c3ab8752413862"
+index = 4
+role = "student"
+used = false
+
+[["Spud Buds".tokens]]
+token = "2f23b7403c54ccc773efb101e03c3de04b07b6d91ae544b88bff1b16093cd7f4"
+index = 5
+role = "student"
+used = false
+
+[["Spud Buds".tokens]]
+token = "12fcf2f60300cdb7935c12079243a1ac01c4fe3c636f201f9ef0701f40c8f7a1"
+index = 6
+role = "student"
+used = false
+
+[["Spud Buds".tokens]]
+token = "712894102b64d1e335dfed91dc09480b49f41e6579c0022388c8f87a33ae1ab5"
+index = 7
+role = "student"
+used = false
+
+[["Spud Buds".tokens]]
+token = "fc1efde6a95cbea934d5ce019252f6f44c89319b8ff12d02ebc03fd41b8b5d77"
+index = 8
+role = "student"
+used = false
+
+[["Spud Buds".tokens]]
+token = "77c668785602d23b9eecabc661489dd650ce1edb4fed7dc1494d8444eb93260c"
+index = 9
+role = "student"
+used = false
+
+[["Spud Buds".tokens]]
+token = "a37473b0fdaf265a98ac7b9312548032cbec26e018b7740a1456568f4372933f"
+index = 10
+role = "student"
+used = false
+
+[["Spud Buds".tokens]]
+token = "daad92a3c6ad84cecea848b0066ef7c43bf2c0696a97cd8fef09094daf937b18"
+index = 11
+role = "student"
+used = false
+
+[["Spud Buds".tokens]]
+token = "d21c7f7f15f3b9ca3da7a6dcd8744007b2e1499b8dee288a8cca1324f38f1c2b"
+index = 12
+role = "student"
+used = false
+
+[["Spud Buds".tokens]]
+token = "33461ca1072801f989e0d81b92003c70eca40bf5609405e93ab424926215d8aa"
+index = 13
+role = "student"
+used = false
+
+[["Spud Buds".tokens]]
+token = "9e38b3d965741109d880438cd7d1199b38d5abc18c22df724a19d0070c429c67"
+index = 14
+role = "student"
+used = false
+
+[["Spud Buds".tokens]]
+token = "20c27912996b670c688f26265ccda7ec7d3a382c9615a97d685ff45b5f7bd348"
+index = 15
+role = "student"
+used = false
+
+[["Spud Buds".tokens]]
+token = "1fa3e84ed5ce07009e0fe287f502950441390145d23171c08aed99b1645d2bc8"
+index = 16
+role = "student"
+used = false
+
+[["Spud Buds".tokens]]
+token = "70cc0d73b96a63c04c674b0d6a6e987a5cbc84655166a97f7f49934f80a354a3"
+index = 17
+role = "student"
+used = false
+
+[["Spud Buds".tokens]]
+token = "6c7e312155c27ef768e9d94c7acd1ccb428ed18896394e58886587036836ad77"
+index = 18
+role = "student"
+used = false
+
+[["Spud Buds".tokens]]
+token = "3540404776fb334cc4cb604be778b1fd8935a00b1f5c9a14094aa296921cbf0c"
+index = 19
+role = "student"
+used = false
+
+[["Spud Buds".tokens]]
+token = "550b4c474a808115a1d6e91c6f956d5e19c3dd6c1d665a8d0c045c27fd657e7b"
+index = 0
+role = "mentor"
+used = false
+
+[[MortalFoes.tokens]]
+token = "792d249372053e3f49b73d92031e6208968da7b89e7e2f8eabedfa56d7433494"
+index = 0
+role = "student"
+used = false
+
+[[MortalFoes.tokens]]
+token = "884ae74f080cf8cdfdd238cd726cd704ad9ed0676ee081fe231ea5d577ad0e73"
+index = 1
+role = "student"
+used = false
+
+[[MortalFoes.tokens]]
+token = "500cd15cb577f2c18a3e0da3521e4f91bce9d5db52e7cd631f2118b961c27482"
+index = 2
+role = "student"
+used = false
+
+[[MortalFoes.tokens]]
+token = "3271656472a581a19836417f0e5ec726639edaba31d6e15fed3ee56f71ad9a7b"
+index = 3
+role = "student"
+used = false
+
+[[MortalFoes.tokens]]
+token = "be18c410f341917f563405eb976fcecb8acb72f9ef43c04412a90ec57803e017"
+index = 4
+role = "student"
+used = false
+
+[[MortalFoes.tokens]]
+token = "57aaa01f8e0d46be95c9c8ac3892d97117a80c6d3e1f1f84abe8391039b9c227"
+index = 5
+role = "student"
+used = false
+
+[[MortalFoes.tokens]]
+token = "75da7a84d0603e2ba21024b6e3e35135cf854cd491f2b3e05c6c66c90aa4b406"
+index = 6
+role = "student"
+used = false
+
+[[MortalFoes.tokens]]
+token = "77ae1ab2cc0959ad0e2dad1ee806dc3fd246553fc3b3c0c684b1776524d460a2"
+index = 7
+role = "student"
+used = false
+
+[[MortalFoes.tokens]]
+token = "00cd67fbac11fcfe8aa8e0a1b2e00e24610cce096e63ba211fc6227dbdf9b92b"
+index = 8
+role = "student"
+used = false
+
+[[MortalFoes.tokens]]
+token = "9bd84bbfa8458183e57cc9672a08cf5c34a3c6d99924c85f0aeaa1b9db977528"
+index = 9
+role = "student"
+used = false
+
+[[MortalFoes.tokens]]
+token = "663f47085a6c49eff97d01853a603d150709f2bad57e66410d2f6b6ea1e4ba24"
+index = 10
+role = "student"
+used = false
+
+[[MortalFoes.tokens]]
+token = "6e45882fdfef26d2463dcbff8b6b4c20565bf7e16041fceadc385b49f534bf03"
+index = 11
+role = "student"
+used = false
+
+[[MortalFoes.tokens]]
+token = "355ee407ed57b3705c00aad627d43b4a82a1b9e2945e2a30ec9bbb0fa1f64475"
+index = 12
+role = "student"
+used = false
+
+[[MortalFoes.tokens]]
+token = "aa25c87124b3991b479bccc19a89b7c403e7307af3cd2467ab12aec8f1a495d0"
+index = 13
+role = "student"
+used = false
+
+[[MortalFoes.tokens]]
+token = "1f6881cc1788fa0e295443aa2a2775f3bd87a68bdf3d0f06ee58a3f9c6de2b9e"
+index = 14
+role = "student"
+used = false
+
+[[MortalFoes.tokens]]
+token = "cefe35654491f2d7ac22735a2201c1fbb6072680f0380361dc46b36722028f4f"
+index = 15
+role = "student"
+used = false
+
+[[MortalFoes.tokens]]
+token = "5cc285ad627b8bd8b25f5d2cbe58eb4c3217599ed26bd5b3de55a987bca12554"
+index = 16
+role = "student"
+used = false
+
+[[MortalFoes.tokens]]
+token = "aed0a66d32588d1376547d709e43e06fb9bb6123efb3537d5c56f151c5000c71"
+index = 17
+role = "student"
+used = false
+
+[[MortalFoes.tokens]]
+token = "858e2927befced9e2bf46df7ac04fb6451d7dd61e070cce792b5f844180aeab5"
+index = 18
+role = "student"
+used = false
+
+[[MortalFoes.tokens]]
+token = "cb870964c97a08c351c62b87d8c9df672087fc207193f4d37024e0b9dc24484f"
+index = 19
+role = "student"
+used = false
+
+[[MortalFoes.tokens]]
+token = "8626d93466ae18611ab9d2b6d1a8d322e3e07855b541e4eb9816dad262628e1b"
+index = 0
+role = "mentor"
+used = false

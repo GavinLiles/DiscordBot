@@ -1,18 +1,20 @@
 # School classes configuration
 
-[[classes]]
+[[groups]]
 name = "Discord Bot"
 mentor = 1
 slack = ""
+text_channels = ""
+voice_channels = ""
 students = 20
 
-[[classes]]
+[[groups]]
 name = "Spud Buds"
 mentor = 1
 slack = "C098XJU0SEQ"
 students = 20
 
-[[classes]]
+[[groups]]
 name = "MortalFoes"
 mentor = 1
 slack = ""

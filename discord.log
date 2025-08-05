@@ -748,3 +748,252 @@ INFO:discord.client:logging in using static token
 INFO:slack_bolt.AsyncApp:A new session (s_149209299936) has been established
 INFO:slack_bolt.AsyncApp:Bolt app is running!
 INFO:discord.gateway:Shard ID None has connected to Gateway (Session ID: 7ec27aa2aeced3f9d080326a7ff0a015).
+INFO:discord.client:logging in using static token
+INFO:slack_bolt.AsyncApp:A new session (s_145906291596) has been established
+INFO:slack_bolt.AsyncApp:Bolt app is running!
+INFO:discord.gateway:Shard ID None has connected to Gateway (Session ID: 41256138fa813c2d23aef7ba0755d627).
+ERROR:discord.ext.commands.bot:Ignoring exception in command DeleteCategory
+Traceback (most recent call last):
+  File "C:\Users\Gavin Liles\AppData\Local\Programs\Python\Python313\Lib\site-packages\discord\ext\commands\core.py", line 235, in wrapped
+    ret = await coro(*args, **kwargs)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Gavin Liles\Documents\codeproject\DiscordBot\DiscordBot\main.py", line 74, in DeleteCategory
+    await Commands.DeleteCategory(ctx, message, bot, MENTORROLE)
+  File "C:\Users\Gavin Liles\Documents\codeproject\DiscordBot\DiscordBot\Commands.py", line 103, in DeleteCategory
+    filepath = category + ".toml"
+               ~~~~~~~~~^~~~~~~~~
+TypeError: unsupported operand type(s) for +: 'CategoryChannel' and 'str'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\Gavin Liles\AppData\Local\Programs\Python\Python313\Lib\site-packages\discord\ext\commands\bot.py", line 1366, in invoke
+    await ctx.command.invoke(ctx)
+  File "C:\Users\Gavin Liles\AppData\Local\Programs\Python\Python313\Lib\site-packages\discord\ext\commands\core.py", line 1029, in invoke
+    await injected(*ctx.args, **ctx.kwargs)  # type: ignore
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Gavin Liles\AppData\Local\Programs\Python\Python313\Lib\site-packages\discord\ext\commands\core.py", line 244, in wrapped
+    raise CommandInvokeError(exc) from exc
+discord.ext.commands.errors.CommandInvokeError: Command raised an exception: TypeError: unsupported operand type(s) for +: 'CategoryChannel' and 'str'
+INFO:slack_bolt.AsyncApp:The session (s_145906291596) seems to be already closed. Reconnecting...
+INFO:slack_bolt.AsyncApp:The old session (s_145906291596) has been abandoned
+INFO:slack_bolt.AsyncApp:A new session (s_145906272381) has been established
+INFO:discord.client:logging in using static token
+INFO:slack_bolt.AsyncApp:A new session (s_166547116940) has been established
+INFO:slack_bolt.AsyncApp:Bolt app is running!
+INFO:discord.gateway:Shard ID None has connected to Gateway (Session ID: 869ad7084523368e9549e59f697dbfee).
+ERROR:discord.ext.commands.bot:Ignoring exception in command DeleteCategory
+Traceback (most recent call last):
+  File "C:\Users\Gavin Liles\AppData\Local\Programs\Python\Python313\Lib\site-packages\discord\ext\commands\core.py", line 235, in wrapped
+    ret = await coro(*args, **kwargs)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Gavin Liles\Documents\codeproject\DiscordBot\DiscordBot\main.py", line 74, in DeleteCategory
+    await Commands.DeleteCategory(ctx, message, bot, MENTORROLE)
+  File "C:\Users\Gavin Liles\Documents\codeproject\DiscordBot\DiscordBot\Commands.py", line 103, in DeleteCategory
+    filepath = category + "_tokens.toml"
+               ~~~~~~~~~^~~~~~~~~~~~~~~~
+TypeError: unsupported operand type(s) for +: 'CategoryChannel' and 'str'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\Gavin Liles\AppData\Local\Programs\Python\Python313\Lib\site-packages\discord\ext\commands\bot.py", line 1366, in invoke
+    await ctx.command.invoke(ctx)
+  File "C:\Users\Gavin Liles\AppData\Local\Programs\Python\Python313\Lib\site-packages\discord\ext\commands\core.py", line 1029, in invoke
+    await injected(*ctx.args, **ctx.kwargs)  # type: ignore
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Gavin Liles\AppData\Local\Programs\Python\Python313\Lib\site-packages\discord\ext\commands\core.py", line 244, in wrapped
+    raise CommandInvokeError(exc) from exc
+discord.ext.commands.errors.CommandInvokeError: Command raised an exception: TypeError: unsupported operand type(s) for +: 'CategoryChannel' and 'str'
+INFO:discord.client:logging in using static token
+INFO:slack_bolt.AsyncApp:A new session (s_110884102007) has been established
+INFO:slack_bolt.AsyncApp:Bolt app is running!
+INFO:discord.gateway:Shard ID None has connected to Gateway (Session ID: 5e6922e8cdea24bd46bfccc0b3f0e7b0).
+INFO:discord.client:logging in using static token
+INFO:slack_bolt.AsyncApp:A new session (s_108655064951) has been established
+INFO:slack_bolt.AsyncApp:Bolt app is running!
+INFO:discord.gateway:Shard ID None has connected to Gateway (Session ID: 903dba0130e22701620e194e71a5b662).
+INFO:discord.client:logging in using static token
+INFO:slack_bolt.AsyncApp:A new session (s_127558492023) has been established
+INFO:slack_bolt.AsyncApp:Bolt app is running!
+INFO:discord.gateway:Shard ID None has connected to Gateway (Session ID: c188cf99adeca13ac92430dbeaec444c).
+ERROR:discord.ext.commands.bot:Ignoring exception in command DeleteCategory
+Traceback (most recent call last):
+  File "C:\Users\Gavin Liles\AppData\Local\Programs\Python\Python313\Lib\site-packages\discord\ext\commands\core.py", line 235, in wrapped
+    ret = await coro(*args, **kwargs)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Gavin Liles\Documents\codeproject\DiscordBot\DiscordBot\main.py", line 74, in DeleteCategory
+    await Commands.DeleteCategory(ctx, message, bot, MENTORROLE)
+  File "C:\Users\Gavin Liles\Documents\codeproject\DiscordBot\DiscordBot\Commands.py", line 107, in DeleteCategory
+    filename = f"{category.replace(' ', '_').lower()}_tokens.toml"
+                  ^^^^^^^^^^^^^^^^
+AttributeError: 'CategoryChannel' object has no attribute 'replace'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\Gavin Liles\AppData\Local\Programs\Python\Python313\Lib\site-packages\discord\ext\commands\bot.py", line 1366, in invoke
+    await ctx.command.invoke(ctx)
+  File "C:\Users\Gavin Liles\AppData\Local\Programs\Python\Python313\Lib\site-packages\discord\ext\commands\core.py", line 1029, in invoke
+    await injected(*ctx.args, **ctx.kwargs)  # type: ignore
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Gavin Liles\AppData\Local\Programs\Python\Python313\Lib\site-packages\discord\ext\commands\core.py", line 244, in wrapped
+    raise CommandInvokeError(exc) from exc
+discord.ext.commands.errors.CommandInvokeError: Command raised an exception: AttributeError: 'CategoryChannel' object has no attribute 'replace'
+INFO:discord.client:logging in using static token
+INFO:slack_bolt.AsyncApp:A new session (s_152249343863) has been established
+INFO:slack_bolt.AsyncApp:Bolt app is running!
+INFO:discord.gateway:Shard ID None has connected to Gateway (Session ID: 9c24e25646dc58ae42a057d86365ba8e).
+INFO:discord.gateway:Shard ID None has successfully RESUMED session 9c24e25646dc58ae42a057d86365ba8e.
+INFO:discord.gateway:Shard ID None has successfully RESUMED session 9c24e25646dc58ae42a057d86365ba8e.
+INFO:slack_bolt.AsyncApp:The old session (s_152249343863) has been abandoned
+INFO:slack_bolt.AsyncApp:A new session (s_152249326493) has been established
+INFO:discord.gateway:Shard ID None has successfully RESUMED session 9c24e25646dc58ae42a057d86365ba8e.
+INFO:discord.gateway:Shard ID None has successfully RESUMED session 9c24e25646dc58ae42a057d86365ba8e.
+INFO:slack_bolt.AsyncApp:The old session (s_152249326493) has been abandoned
+INFO:slack_bolt.AsyncApp:A new session (s_152249326053) has been established
+INFO:discord.client:logging in using static token
+INFO:slack_bolt.AsyncApp:A new session (s_123183192972) has been established
+INFO:slack_bolt.AsyncApp:Bolt app is running!
+INFO:discord.gateway:Shard ID None has connected to Gateway (Session ID: a206fc7ed209cef568bc69cd5a7bf5ae).
+ERROR:discord.ext.commands.bot:Ignoring exception in command DeleteCategory
+Traceback (most recent call last):
+  File "C:\Users\Gavin Liles\AppData\Local\Programs\Python\Python313\Lib\site-packages\discord\ext\commands\core.py", line 235, in wrapped
+    ret = await coro(*args, **kwargs)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Gavin Liles\Documents\codeproject\DiscordBot\DiscordBot\main.py", line 74, in DeleteCategory
+    await Commands.DeleteCategory(ctx, message, bot, MENTORROLE)
+  File "C:\Users\Gavin Liles\Documents\codeproject\DiscordBot\DiscordBot\Commands.py", line 96, in DeleteCategory
+    await category.delete()
+    ^^^^^^^^^^^^^^^^^
+  File "C:\Users\Gavin Liles\AppData\Local\Programs\Python\Python313\Lib\site-packages\discord\abc.py", line 871, in delete
+    await self._state.http.delete_channel(self.id, reason=reason)
+  File "C:\Users\Gavin Liles\AppData\Local\Programs\Python\Python313\Lib\site-packages\discord\http.py", line 758, in request
+    raise NotFound(response, data)
+discord.errors.NotFound: 404 Not Found (error code: 10003): Unknown Channel
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\Gavin Liles\AppData\Local\Programs\Python\Python313\Lib\site-packages\discord\ext\commands\bot.py", line 1366, in invoke
+    await ctx.command.invoke(ctx)
+  File "C:\Users\Gavin Liles\AppData\Local\Programs\Python\Python313\Lib\site-packages\discord\ext\commands\core.py", line 1029, in invoke
+    await injected(*ctx.args, **ctx.kwargs)  # type: ignore
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Gavin Liles\AppData\Local\Programs\Python\Python313\Lib\site-packages\discord\ext\commands\core.py", line 244, in wrapped
+    raise CommandInvokeError(exc) from exc
+discord.ext.commands.errors.CommandInvokeError: Command raised an exception: NotFound: 404 Not Found (error code: 10003): Unknown Channel
+ERROR:discord.ext.commands.bot:Ignoring exception in command DeleteCategory
+Traceback (most recent call last):
+  File "C:\Users\Gavin Liles\AppData\Local\Programs\Python\Python313\Lib\site-packages\discord\ext\commands\core.py", line 235, in wrapped
+    ret = await coro(*args, **kwargs)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Gavin Liles\Documents\codeproject\DiscordBot\DiscordBot\main.py", line 74, in DeleteCategory
+    await Commands.DeleteCategory(ctx, message, bot, MENTORROLE)
+  File "C:\Users\Gavin Liles\Documents\codeproject\DiscordBot\DiscordBot\Commands.py", line 96, in DeleteCategory
+    await category.delete()
+    ^^^^^^^^^^^^^^^^^
+  File "C:\Users\Gavin Liles\AppData\Local\Programs\Python\Python313\Lib\site-packages\discord\abc.py", line 871, in delete
+    await self._state.http.delete_channel(self.id, reason=reason)
+  File "C:\Users\Gavin Liles\AppData\Local\Programs\Python\Python313\Lib\site-packages\discord\http.py", line 758, in request
+    raise NotFound(response, data)
+discord.errors.NotFound: 404 Not Found (error code: 10003): Unknown Channel
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\Gavin Liles\AppData\Local\Programs\Python\Python313\Lib\site-packages\discord\ext\commands\bot.py", line 1366, in invoke
+    await ctx.command.invoke(ctx)
+  File "C:\Users\Gavin Liles\AppData\Local\Programs\Python\Python313\Lib\site-packages\discord\ext\commands\core.py", line 1029, in invoke
+    await injected(*ctx.args, **ctx.kwargs)  # type: ignore
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Gavin Liles\AppData\Local\Programs\Python\Python313\Lib\site-packages\discord\ext\commands\core.py", line 244, in wrapped
+    raise CommandInvokeError(exc) from exc
+discord.ext.commands.errors.CommandInvokeError: Command raised an exception: NotFound: 404 Not Found (error code: 10003): Unknown Channel
+INFO:discord.client:logging in using static token
+INFO:slack_bolt.AsyncApp:A new session (s_170748881804) has been established
+INFO:slack_bolt.AsyncApp:Bolt app is running!
+INFO:discord.gateway:Shard ID None has connected to Gateway (Session ID: a39cb780eccec08104598374d972e699).
+ERROR:discord.ext.commands.bot:Ignoring exception in command DeleteCategory
+Traceback (most recent call last):
+  File "C:\Users\Gavin Liles\AppData\Local\Programs\Python\Python313\Lib\site-packages\discord\ext\commands\core.py", line 235, in wrapped
+    ret = await coro(*args, **kwargs)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Gavin Liles\Documents\codeproject\DiscordBot\DiscordBot\main.py", line 74, in DeleteCategory
+    await Commands.DeleteCategory(ctx, message, bot, MENTORROLE)
+  File "C:\Users\Gavin Liles\Documents\codeproject\DiscordBot\DiscordBot\Commands.py", line 94, in DeleteCategory
+    await ch.delete()
+  File "C:\Users\Gavin Liles\AppData\Local\Programs\Python\Python313\Lib\site-packages\discord\abc.py", line 871, in delete
+    await self._state.http.delete_channel(self.id, reason=reason)
+  File "C:\Users\Gavin Liles\AppData\Local\Programs\Python\Python313\Lib\site-packages\discord\http.py", line 758, in request
+    raise NotFound(response, data)
+discord.errors.NotFound: 404 Not Found (error code: 10003): Unknown Channel
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\Gavin Liles\AppData\Local\Programs\Python\Python313\Lib\site-packages\discord\ext\commands\bot.py", line 1366, in invoke
+    await ctx.command.invoke(ctx)
+  File "C:\Users\Gavin Liles\AppData\Local\Programs\Python\Python313\Lib\site-packages\discord\ext\commands\core.py", line 1029, in invoke
+    await injected(*ctx.args, **ctx.kwargs)  # type: ignore
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Gavin Liles\AppData\Local\Programs\Python\Python313\Lib\site-packages\discord\ext\commands\core.py", line 244, in wrapped
+    raise CommandInvokeError(exc) from exc
+discord.ext.commands.errors.CommandInvokeError: Command raised an exception: NotFound: 404 Not Found (error code: 10003): Unknown Channel
+ERROR:discord.ext.commands.bot:Ignoring exception in command DeleteCategory
+Traceback (most recent call last):
+  File "C:\Users\Gavin Liles\AppData\Local\Programs\Python\Python313\Lib\site-packages\discord\ext\commands\core.py", line 235, in wrapped
+    ret = await coro(*args, **kwargs)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Gavin Liles\Documents\codeproject\DiscordBot\DiscordBot\main.py", line 74, in DeleteCategory
+    await Commands.DeleteCategory(ctx, message, bot, MENTORROLE)
+  File "C:\Users\Gavin Liles\Documents\codeproject\DiscordBot\DiscordBot\Commands.py", line 94, in DeleteCategory
+    await ch.delete()
+  File "C:\Users\Gavin Liles\AppData\Local\Programs\Python\Python313\Lib\site-packages\discord\abc.py", line 871, in delete
+    await self._state.http.delete_channel(self.id, reason=reason)
+  File "C:\Users\Gavin Liles\AppData\Local\Programs\Python\Python313\Lib\site-packages\discord\http.py", line 758, in request
+    raise NotFound(response, data)
+discord.errors.NotFound: 404 Not Found (error code: 10003): Unknown Channel
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\Gavin Liles\AppData\Local\Programs\Python\Python313\Lib\site-packages\discord\ext\commands\bot.py", line 1366, in invoke
+    await ctx.command.invoke(ctx)
+  File "C:\Users\Gavin Liles\AppData\Local\Programs\Python\Python313\Lib\site-packages\discord\ext\commands\core.py", line 1029, in invoke
+    await injected(*ctx.args, **ctx.kwargs)  # type: ignore
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Gavin Liles\AppData\Local\Programs\Python\Python313\Lib\site-packages\discord\ext\commands\core.py", line 244, in wrapped
+    raise CommandInvokeError(exc) from exc
+discord.ext.commands.errors.CommandInvokeError: Command raised an exception: NotFound: 404 Not Found (error code: 10003): Unknown Channel
+INFO:discord.client:logging in using static token
+INFO:slack_bolt.AsyncApp:A new session (s_125268810636) has been established
+INFO:slack_bolt.AsyncApp:Bolt app is running!
+INFO:discord.gateway:Shard ID None has connected to Gateway (Session ID: ad253873048831d3c3621cd9843829b2).
+ERROR:discord.ext.commands.bot:Ignoring exception in command DeleteCategory
+Traceback (most recent call last):
+  File "C:\Users\Gavin Liles\AppData\Local\Programs\Python\Python313\Lib\site-packages\discord\ext\commands\core.py", line 235, in wrapped
+    ret = await coro(*args, **kwargs)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Gavin Liles\Documents\codeproject\DiscordBot\DiscordBot\main.py", line 74, in DeleteCategory
+    await Commands.DeleteCategory(ctx, message, bot, MENTORROLE)
+  File "C:\Users\Gavin Liles\Documents\codeproject\DiscordBot\DiscordBot\Commands.py", line 96, in DeleteCategory
+    await category.delete()
+    ^^^^^^^^^^^^^^^^^
+  File "C:\Users\Gavin Liles\AppData\Local\Programs\Python\Python313\Lib\site-packages\discord\abc.py", line 871, in delete
+    await self._state.http.delete_channel(self.id, reason=reason)
+  File "C:\Users\Gavin Liles\AppData\Local\Programs\Python\Python313\Lib\site-packages\discord\http.py", line 758, in request
+    raise NotFound(response, data)
+discord.errors.NotFound: 404 Not Found (error code: 10003): Unknown Channel
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\Gavin Liles\AppData\Local\Programs\Python\Python313\Lib\site-packages\discord\ext\commands\bot.py", line 1366, in invoke
+    await ctx.command.invoke(ctx)
+  File "C:\Users\Gavin Liles\AppData\Local\Programs\Python\Python313\Lib\site-packages\discord\ext\commands\core.py", line 1029, in invoke
+    await injected(*ctx.args, **ctx.kwargs)  # type: ignore
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Gavin Liles\AppData\Local\Programs\Python\Python313\Lib\site-packages\discord\ext\commands\core.py", line 244, in wrapped
+    raise CommandInvokeError(exc) from exc
+discord.ext.commands.errors.CommandInvokeError: Command raised an exception: NotFound: 404 Not Found (error code: 10003): Unknown Channel
