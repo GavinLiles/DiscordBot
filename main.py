@@ -10,6 +10,7 @@ from dotenv import load_dotenv
 import SuperAdmin
 import Control
 from slack import init_slack_app, get_slack_app, get_socket_handler, get_channel_map, load_channel_map
+import Commands
 
 load_dotenv()
 
@@ -66,83 +67,42 @@ async def handle_superadmin_commands(message):
     if message.attachments:
         await SuperAdmin.process_tml(message, SUPERADMINCHAT, SUPERADMINROLE, MENTORROLE)
 
-    elif message.content.startswith("delete"):
-        category_name = message.content.split(" ", 1)[1]
-        category = discord.utils.get(message.guild.categories, name=category_name)
-
-        await message.channel.send("Are you sure you want to remove this category? (yes/no)")
-        confirm = await bot.wait_for("message", check=lambda m: m.author == message.author and m.channel == message.channel)
-        if confirm.content.lower() == "yes" and category:
-            for ch in category.channels:
-                await ch.delete()
-            await discord.utils.get(message.guild.roles, name=f"{category_name} {MENTORROLE}").delete()
-            await discord.utils.get(message.guild.roles, name=category_name).delete()
-            await category.delete()
-
-    elif message.content.startswith("remove"):
-        role_name = message.content.split(" ", 1)[1]
-        role = discord.utils.get(message.guild.roles, name=role_name)
-
-        await message.channel.send("Are you sure you want to remove the role? (yes/no)")
-        confirm = await bot.wait_for("message", check=lambda m: m.author == message.author and m.channel == message.channel)
-        if confirm.content.lower() == "yes":
-            for member in message.guild.members:
-                if role in member.roles:
-                    await member.remove_roles(role)
+#these are user input commands for SuperAdmin
+@bot.command()
+@commands.has_any_role("SuperAdmin")
+async def DeleteCategory(ctx, *, message):
+    await Commands.DeleteCategory(ctx, message, bot, MENTORROLE)
+    
+@bot.command()
+@commands.has_any_role("SuperAdmin")
+async def RevokeRoles(ctx, *, message):
+    await Commands.RevokeRoles(ctx, message, bot)
+    
+#These are user input commands for both Mentors and SuperAdmin
+@bot.command()
+async def CreateTC(ctx, *, name):
+    await Commands.CreateTC(ctx, name)
 
 @bot.command()
-async def Create(ctx, *, name):
-    if ctx.channel.name != "admin":
-        await ctx.send("Wrong channel")
-        return
-
-    category = ctx.channel.category
-    if category and any(ch.name == name for ch in category.text_channels):
-        await ctx.send(f"{name} already exists!")
-        return
-
-    await ctx.guild.create_text_channel(name, category=category)
-    await ctx.send(f"{name} created")
+async def DeleteTC(ctx, *, name):
+    await Commands.DeleteTC(ctx, name)
 
 @bot.command()
-async def Delete(ctx, *, name):
-    if ctx.channel.name != "admin":
-        await ctx.send("Wrong channel")
-        return
+async def CreateVC(ctx, *, name):
+    await Commands.CreateVC(ctx, name)
 
-    category = ctx.channel.category
-    for ch in category.text_channels:
-        if ch.name == name:
-            await ch.delete()
-            await ctx.send(f"{name} has been deleted")
-            return
-
-    await ctx.send("Channel does not exist")
+@bot.command()
+async def DeleteVC(ctx, *, name):
+    await Commands.DeleteVC(ctx, name)
 
 @bot.command()
 async def links(ctx, setting: str):
-    if ctx.channel.name != "admin":
-        await ctx.send("Wrong channel")
-        return
-
-    link_control[ctx.guild.id] = setting.lower() == "on"
-    await ctx.send(f"Links have been turned {'on' if setting.lower() == 'on' else 'off'}.")
+    await Commands.links(ctx, link_control, setting)
 
 @bot.command()
+@commands.has_any_role("SuperAdmin", "MENTORROLE")
 async def Clear(ctx, amount: str):
-    if amount.lower() == "all":
-        await ctx.channel.purge()
-        return
-
-    if not amount.isdigit():
-        await ctx.send("Please enter a whole number e.g (!clear 100) or use 'all.'")
-        return
-
-    count = int(amount)
-    if count == 0:
-        await ctx.send("Please enter a number greater than 0.")
-    else:
-        await ctx.channel.purge(limit=count + 1)
+    await Commands.Clear(ctx, amount)
 
 async def start_bridge():
     socket_handler = get_socket_handler(SLACK_APP_TOKEN)
