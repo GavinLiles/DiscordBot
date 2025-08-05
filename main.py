@@ -70,10 +70,14 @@ async def on_message(message):
                         await member.remove_roles(role)
 
      #checking link setting
-    link_allowed = link_control.get(message.guild.id, True) #default is true, allowing links
-    if not link_allowed and ('https://'in message.content or 'http://' in message.content): 
-        await message.delete()
-        await message.channel.send(f"{message.author.mention} links are currently disabled.")
+    link_setting = link_control.get(message.guild.id, {})
+    if 'http://' in message.content or 'https://' in message.content:
+        for role in message.author.roles: #Loops through all the roles the message author has
+            if link_setting.get(role.id) is False:
+                 await message.delete()
+                 await message.channel.send(f"{message.author.mention}, links are currently disabled for '{role.name}'.")
+                 break # Stop checking after the first match
+
 
     await bot.process_commands(message)
 
@@ -105,20 +109,33 @@ async def Delete(ctx,*,message):
             return
     await ctx.send("Channel does not exist")
 
-link_control = {}
+link_control = {
+    guild_id: {
+        role_id: True or False
+    }
+}
 
 @bot.command()
-async def links(ctx, setting: str):
-    if ctx.channel.name != 'admin':
-        await ctx.send("Wrong channel")
+@commands.has_permissions(manage_roles = True)
+async def Links(ctx, role_name: str, setting: str, ):
+    role = discord.utils.get(ctx.guild.roles, name=role_name)
+    setting = setting.lower()
+    if not role:
+        await ctx.send(f"Role '{role_name}' not found.")
         return
-    elif setting.lower() == 'off':
-        link_control[ctx.guild.id] = False
-    elif setting.lower() == 'on':
-        link_control[ctx.guild.id] = True
+    if setting not in ['on', 'off']:
+        await ctx.send("Invalid setting. Use !Links role_name on or off.")
+        return
+    if ctx.guild.id not in link_control:
+        link_control[ctx.guild.id] = {}
+    if setting == 'on':
+        link_control[ctx.guild.id][role.id] = True
+    elif setting == 'off':
+        link_control[ctx.guild.id][role.id] = False
 
 # admin must be in the chat to clear messages
 @bot.command()
+@commands.has_any_role(SUPERADMINROLE,MentorRole)
 async def Clear(ctx, amount:str): # clears a number of messages
     if amount.lower() == 'all':
         await ctx.channel.purge()
@@ -134,7 +151,28 @@ async def Clear(ctx, amount:str): # clears a number of messages
         else:
             await ctx.channel.purge(limit = amount + 1) # +1 to include the bot command
 
-
+@bot.command()
+async def Remove(ctx,member: discord.Member,*,group_name=None):
+    if ctx.channel.name != 'admin':
+        await ctx.send("Wrong channel")
+        return
+    if member == ctx.author: # cannot remove oneself 
+        await ctx.send("You cannot remove youself.")
+        return
+    if not group_name:
+        await ctx.send("Please specify the group name to remove from. e.g !Remove @user group_name")
+        return
+    role =  discord.utils.get(ctx.guild.roles, name=group_name)
+    if not role:
+        await ctx.send(f"The group '{group_name}' doesn't exist.")
+        return
+    try:
+        await member.remove_roles(role)
+        await ctx.send(f"{member.display_name} has been removed from {role.name}.")
+    except discord.Forbidden:
+        await ctx.send("Don't have permission.")
+    except discord.HTTPException as e:
+         await ctx.send(f"An error occurred while banning: {e}")
 
 
 
