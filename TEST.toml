@@ -4,14 +4,16 @@
 name = "Discord Bot"
 mentor = 1
 slack = ""
-text_channels = ""
-voice_channels = ""
+text_channels = "hi"
+voice_channels = "cool"
 students = 20
 
 [[groups]]
 name = "Spud Buds"
 mentor = 1
 slack = "C098XJU0SEQ"
+text_channels = "hi"
+voice_channels = "cool"
 students = 20
 
 [[groups]]
@@ -19,3 +21,5 @@ name = "MortalFoes"
 mentor = 1
 slack = ""
 students = 20
+text_channels = "hi"
+voice_channels = "cool"

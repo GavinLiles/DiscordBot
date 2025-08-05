@@ -3,7 +3,7 @@ import discord
 
 from discord.ext import commands
 from dotenv import load_dotenv
-
+import SuperAdmin
 #Creates a Voice channel
 async def CreateTC(ctx, name):
     #do nothing if channel isn't admin
@@ -93,25 +93,68 @@ async def Clear(ctx, amount : str):
         await ctx.channel.purge(limit=count + 1)
 
 #deletes a category, including the channels and roles connected to said category
-async def DeleteCategory(ctx, message, bot, MENTORROLE):
-    if str(ctx.channel) == 'superadminchat':
+import SuperAdmin  # Ensure this is at the top of your file
 
-        for category in ctx.guild.categories:
-            if message == str(category):
-                await ctx.send("Are you sure you want to delete this category? (yes/no)")
-                confirm = await bot.wait_for("message", check=lambda m: m.author == ctx.author and m.channel == ctx.channel)
-                if confirm.content.lower() == "yes":
-                    for ch in category.channels:
-                        await ch.delete()
-                    
-                    await category.delete()
-                    try:
-                        await discord.utils.get(message.guild.roles, name=f"{message} {MENTORROLE}").delete()
-                        await discord.utils.get(message.guild.roles, name=message).delete()
-                    except:
-                        return
+async def DeleteCategory(ctx, message, bot, MENTORROLE):
+    if str(ctx.channel) != 'superadminchat':
+        return
+
+    for category in ctx.guild.categories:
+        if message.strip().lower() == str(category).strip().lower():
+            await ctx.send(f"Are you sure you want to delete the category '{message}'? (yes/no)")
+
+            confirm = await bot.wait_for(
+                "message",
+                check=lambda m: m.author == ctx.author and m.channel == ctx.channel
+            )
+
+            if confirm.content.strip().lower() == "yes":
+                # Delete all channels inside the category
+                for ch in category.channels:
+                    await ch.delete()
+
+                # Delete the category itself
+                await category.delete()
+
+                try:
+                    # Delete associated roles
+                    mentor_role_name = f"{message} {MENTORROLE}"
+                    user_role_name = message
+
+                    mentor_role = discord.utils.get(ctx.guild.roles, name=mentor_role_name)
+                    user_role = discord.utils.get(ctx.guild.roles, name=user_role_name)
+
+                    if mentor_role:
+                        await mentor_role.delete()
+                        print(f"Deleted mentor role: {mentor_role_name}")
+                    else:
+                        print(f"Mentor role not found: {mentor_role_name}")
+
+                    if user_role:
+                        await user_role.delete()
+                        print(f"Deleted user role: {user_role_name}")
+                    else:
+                        print(f"User role not found: {user_role_name}")
+
+                    # Delete group tokens
+                    category_name = message.strip()
+                    SuperAdmin.delete_group_tokens(category_name)
+                    print(f"Group tokens deleted for: {category_name}")
+
+                    await ctx.send(f"Category '{message}' and all associated resources were deleted.")
                     return
-        await ctx.send("Category not real!")
+
+                except Exception as e:
+                    print(f"Error while deleting roles or tokens: {e}")
+                    await ctx.send(f"Error during deletion: {e}")
+                    return
+
+            else:
+                await ctx.send("Deletion cancelled.")
+                return
+
+    await ctx.send("No matching category found.")
+
         
 #revokes a specific role from everyone
 async def RevokeRoles(ctx, message, bot):

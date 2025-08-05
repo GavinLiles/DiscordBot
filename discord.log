@@ -997,3 +997,59 @@ Traceback (most recent call last):
   File "C:\Users\Gavin Liles\AppData\Local\Programs\Python\Python313\Lib\site-packages\discord\ext\commands\core.py", line 244, in wrapped
     raise CommandInvokeError(exc) from exc
 discord.ext.commands.errors.CommandInvokeError: Command raised an exception: NotFound: 404 Not Found (error code: 10003): Unknown Channel
+INFO:discord.client:logging in using static token
+INFO:slack_bolt.AsyncApp:A new session (s_114566909815) has been established
+INFO:slack_bolt.AsyncApp:Bolt app is running!
+INFO:discord.gateway:Shard ID None has connected to Gateway (Session ID: 93b3ca5b0ccf9f660637a50f3e235d7c).
+INFO:discord.client:logging in using static token
+INFO:slack_bolt.AsyncApp:A new session (s_100656652151) has been established
+INFO:slack_bolt.AsyncApp:Bolt app is running!
+INFO:discord.gateway:Shard ID None has connected to Gateway (Session ID: 1cd3c18eebd447c25c3633df9e26a3de).
+INFO:discord.client:logging in using static token
+INFO:slack_bolt.AsyncApp:A new session (s_126233602935) has been established
+INFO:slack_bolt.AsyncApp:Bolt app is running!
+INFO:discord.gateway:Shard ID None has connected to Gateway (Session ID: 20ddb6ccdb2128e0266eb90e34e8a505).
+ERROR:discord.client:Ignoring exception in on_message
+Traceback (most recent call last):
+  File "C:\Users\Gavin Liles\AppData\Local\Programs\Python\Python313\Lib\site-packages\discord\client.py", line 481, in _run_event
+    await coro(*args, **kwargs)
+  File "C:\Users\Gavin Liles\Documents\codeproject\DiscordBot\DiscordBot\main.py", line 57, in on_message
+    await handle_superadmin_commands(message)
+  File "C:\Users\Gavin Liles\Documents\codeproject\DiscordBot\DiscordBot\main.py", line 74, in handle_superadmin_commands
+    await SuperAdmin.process_tml(message, SUPERADMINCHAT, SUPERADMINROLE, MENTORROLE)
+          ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: process_tml() missing 1 required positional argument: 'MentorRole'
+ERROR:discord.client:Ignoring exception in on_message
+Traceback (most recent call last):
+  File "C:\Users\Gavin Liles\AppData\Local\Programs\Python\Python313\Lib\site-packages\discord\client.py", line 481, in _run_event
+    await coro(*args, **kwargs)
+  File "C:\Users\Gavin Liles\Documents\codeproject\DiscordBot\DiscordBot\main.py", line 57, in on_message
+    await handle_superadmin_commands(message)
+  File "C:\Users\Gavin Liles\Documents\codeproject\DiscordBot\DiscordBot\main.py", line 74, in handle_superadmin_commands
+    await SuperAdmin.process_tml(message, SUPERADMINCHAT, SUPERADMINROLE, MENTORROLE)
+          ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: process_tml() missing 1 required positional argument: 'MentorRole'
+INFO:discord.client:logging in using static token
+INFO:slack_bolt.AsyncApp:A new session (s_106439326583) has been established
+INFO:slack_bolt.AsyncApp:Bolt app is running!
+INFO:discord.gateway:Shard ID None has connected to Gateway (Session ID: 748731c58b895238b0d4dea0f92b80e4).
+INFO:discord.client:logging in using static token
+INFO:slack_bolt.AsyncApp:A new session (s_94161559620) has been established
+INFO:slack_bolt.AsyncApp:Bolt app is running!
+INFO:discord.gateway:Shard ID None has connected to Gateway (Session ID: 758a9e8f1ac8e2d3b23ad1bf643c9cff).
+INFO:discord.client:logging in using static token
+INFO:slack_bolt.AsyncApp:A new session (s_125336169335) has been established
+INFO:slack_bolt.AsyncApp:Bolt app is running!
+INFO:discord.gateway:Shard ID None has connected to Gateway (Session ID: f75504b8611f752ffcab602b511ba764).
+INFO:discord.client:logging in using static token
+INFO:slack_bolt.AsyncApp:A new session (s_159821437815) has been established
+INFO:slack_bolt.AsyncApp:Bolt app is running!
+INFO:discord.gateway:Shard ID None has connected to Gateway (Session ID: 3930b168a4895cf745a1fd8f5bc5bab8).
+INFO:discord.client:logging in using static token
+INFO:slack_bolt.AsyncApp:A new session (s_137783196535) has been established
+INFO:slack_bolt.AsyncApp:Bolt app is running!
+INFO:discord.gateway:Shard ID None has connected to Gateway (Session ID: 9e9008e09fb29680c73664aec87c1647).
+INFO:discord.client:logging in using static token
+INFO:slack_bolt.AsyncApp:A new session (s_97061718924) has been established
+INFO:slack_bolt.AsyncApp:Bolt app is running!
+INFO:discord.gateway:Shard ID None has connected to Gateway (Session ID: 337a83aba71b7d633e0a49b73d269ee9).

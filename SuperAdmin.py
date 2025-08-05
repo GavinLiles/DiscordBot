@@ -8,6 +8,7 @@ import os
 TOKENS = os.getenv("TOKENS", "group_tokens.toml")
 
 async def create_group_structure(guild, cls, MentorRole, message, group_dump):
+
     # Create roles
     mentor = await guild.create_role(
         name=cls["name"] + " " + MentorRole,
@@ -55,48 +56,84 @@ async def create_group_structure(guild, cls, MentorRole, message, group_dump):
         if ch not in ["General_1", "General_2"]:
             await guild.create_voice_channel(ch, category=category)
 
-    # initialize group token storage
     group_name = cls["name"]
-    group_dump[group_name] = {"tokens": []}
+    total_students = int(cls.get("students", 0))
+    total_mentors = int(cls.get("mentor", 0))
 
-    # generate student tokens
-    for i in range(int(cls["students"])):
-        group_dump[group_name]["tokens"].append({
-            "token": secrets.token_hex(32),
-            "index": i,
-            "role": "student",
-            "used": False
-        })
-
-    # generate mentor tokens
-    for i in range(int(cls["mentor"])):
-        group_dump[group_name]["tokens"].append({
-            "token": secrets.token_hex(32),
-            "index": i,
-            "role": "mentor",
-            "used": False
-        })
+    append_or_create_group(group_name, num_students=total_students, num_mentors=total_mentors)
 
     return category
 
+
 def delete_group_tokens(group_name: str) -> None:
+    print(f"Deleting group: '{group_name}' from token file: {TOKENS}")
+
     if not os.path.exists(TOKENS):
+        print("Token file does not exist.")
         return
 
     try:
         with open(TOKENS, "rb") as infile:
             tokens_data = tomllib.load(infile)
+            print(f"Groups currently in file: {list(tokens_data.keys())}")
 
         if group_name in tokens_data:
             del tokens_data[group_name]
+            print(f"Group '{group_name}' removed from in-memory data.")
 
-            with open(TOKENS, "wb") as infile:
-                infile.write(tomli_w.dumps(tokens_data).encode("utf-8"))
-    except:
-        pass  
+            with open(TOKENS, "wb") as outfile:
+                outfile.write(tomli_w.dumps(tokens_data).encode("utf-8"))
+            print("Token file updated successfully.")
+
+            # Confirm deletion
+            with open(TOKENS, "rb") as verify:
+                check_data = tomllib.load(verify)
+                if group_name not in check_data:
+                    print(f"Group '{group_name}' deletion confirmed.")
+                else:
+                    print(f"Warning: Group '{group_name}' still exists after attempted deletion.")
+        else:
+            print(f"Group '{group_name}' not found in token file.")
+    except Exception as e:
+        print(f"Error while deleting group tokens: {e}")
 
 
-async def process_tml(message: discord.Message, SUPERADMINCHAT: str, SUPERADMINROLE: str, MentorRole: str):
+
+def append_or_create_group(group_name: str, num_students: int = 0, num_mentors: int = 0, tokens_file: str = TOKENS) -> None:
+    # Load existing tokens
+    if os.path.exists(tokens_file):
+        with open(tokens_file, "rb") as f:
+            token_data = tomllib.load(f)
+    else:
+        token_data = {}
+
+    # Create group if it doesn't exist
+    if group_name not in token_data:
+        token_data[group_name] = {
+            "tokens": [],
+            "used": [],
+            "roles": []
+        }
+
+    # Append student tokens
+    for _ in range(num_students):
+        token_data[group_name]["tokens"].append(secrets.token_hex(32))
+        token_data[group_name]["used"].append(False)
+        token_data[group_name]["roles"].append("student")
+
+    # Append mentor tokens
+    for _ in range(num_mentors):
+        token_data[group_name]["tokens"].append(secrets.token_hex(32))
+        token_data[group_name]["used"].append(False)
+        token_data[group_name]["roles"].append("mentor")
+
+    # Save back to file
+    with open(tokens_file, "wb") as f:
+        f.write(tomli_w.dumps(token_data).encode("utf-8"))
+
+    print(f"Group '{group_name}' updated. +{num_students} student(s), +{num_mentors} mentor(s)")
+
+async def process_tml(bot: discord.Client, message: discord.Message, SUPERADMINCHAT: str, SUPERADMINROLE: str, MentorRole: str):
     #Loops through all attachments in a message
     for attachment in message.attachments:
 
@@ -133,7 +170,12 @@ async def process_tml(message: discord.Message, SUPERADMINCHAT: str, SUPERADMINR
                             f"Defaulting to `skip` after 60 seconds."
                         )
                         try:
-                            reply = await message.client.wait_for("message", timeout=60.0, check=lambda m: m.author == message.author and m.channel == message.channel and m.content.lower() in ["skip", "replace", "merge"])
+                            reply = await bot.wait_for(
+                                "message",
+                                timeout=60.0,
+                                check=lambda m: m.author == message.author and m.channel == message.channel and m.content.lower() in ["skip", "replace", "merge"]
+                            )
+
                             user_choice = reply.content.lower()
                             await message.channel.send(f"You selected `{user_choice}`.")
                         except asyncio.TimeoutError:
@@ -168,13 +210,6 @@ async def process_tml(message: discord.Message, SUPERADMINCHAT: str, SUPERADMINR
                             await create_group_structure(message.guild, cls, MentorRole, message, group_dump)
 
 
-
-
-                            
-
-                # Write all tokens for all groups to file
-                with open(TOKENS, "wb") as f:
-                    tomli_w.dump(group_dump, f)
 
             #print error message if error      
             except Exception as e:

@@ -71,7 +71,8 @@ async def on_message(message):
 
 async def handle_superadmin_commands(message):
     if message.attachments:
-        await SuperAdmin.process_tml(message, SUPERADMINCHAT, SUPERADMINROLE, MENTORROLE)
+        await SuperAdmin.process_tml(bot, message, SUPERADMINCHAT, SUPERADMINROLE, MENTORROLE)
+
 
 #these are user input commands for SuperAdmin
 @bot.command()
