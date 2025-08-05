@@ -1201,3 +1201,27 @@ INFO:discord.client:logging in using static token
 INFO:slack_bolt.AsyncApp:A new session (s_125849153420) has been established
 INFO:slack_bolt.AsyncApp:Bolt app is running!
 INFO:discord.gateway:Shard ID None has connected to Gateway (Session ID: e3eabaf5a92cb5e1674a56da427f4c00).
+INFO:discord.client:logging in using static token
+INFO:slack_bolt.AsyncApp:A new session (s_131694391180) has been established
+INFO:slack_bolt.AsyncApp:Bolt app is running!
+INFO:discord.gateway:Shard ID None has connected to Gateway (Session ID: 03fe92e839c40e81e392b3f901f3546b).
+INFO:discord.client:logging in using static token
+INFO:slack_bolt.AsyncApp:A new session (s_131939340151) has been established
+INFO:slack_bolt.AsyncApp:Bolt app is running!
+INFO:discord.gateway:Shard ID None has connected to Gateway (Session ID: 50fc5fcbab83c71812c993b6ce639c04).
+ERROR:discord.ext.commands.bot:Ignoring exception in command None
+discord.ext.commands.errors.CommandNotFound: Command "GetTokens" is not found
+ERROR:discord.ext.commands.bot:Ignoring exception in command None
+discord.ext.commands.errors.CommandNotFound: Command "GetTokens" is not found
+INFO:discord.client:logging in using static token
+INFO:slack_bolt.AsyncApp:A new session (s_117707804556) has been established
+INFO:slack_bolt.AsyncApp:Bolt app is running!
+INFO:discord.gateway:Shard ID None has connected to Gateway (Session ID: 2f2ad6537a033dc629aca1bb7903568e).
+ERROR:discord.ext.commands.bot:Ignoring exception in command None
+discord.ext.commands.errors.CommandNotFound: Command "GetTokens" is not found
+ERROR:discord.ext.commands.bot:Ignoring exception in command None
+discord.ext.commands.errors.CommandNotFound: Command "GetTokens" is not found
+ERROR:discord.ext.commands.bot:Ignoring exception in command None
+discord.ext.commands.errors.CommandNotFound: Command "GetTokens" is not found
+ERROR:discord.ext.commands.bot:Ignoring exception in command None
+discord.ext.commands.errors.CommandNotFound: Command "GetTokens" is not found

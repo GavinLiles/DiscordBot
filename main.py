@@ -120,6 +120,10 @@ async def Links(ctx, role_name: str, setting: str):
 @commands.has_any_role("SuperAdmin", "MENTORROLE")
 async def Clear(ctx, amount: str):
     await Commands.Clear(ctx, amount)
+    
+@bot.command()
+async def GetTokens(ctx, *, group_name):
+    await Commands.GetTokens(ctx, group_name=group_name)
 
 @bot.command()
 @commands.has_any_role("SuperAdmin")

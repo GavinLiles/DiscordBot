@@ -1,0 +1,19 @@
+["Discord Bot"]
+tokens = [
+    "09231f40d840ffc445a86e448f3546e789ca9235a4f2f656a56a83f34eb3bfdd",
+    "99f4b27607fea933bc6093cc414b065a0f919564d9424dd5279ff42dbfc888fc",
+    "d6fe752dd64ccad80e402f6a97e768f6e73814688a13c4f238e9826bbfe77dea",
+    "9e30be7a5a74b92c7f662da1bbd4b55743eb4b3246f7093f09f9864eda4d5c50",
+]
+used = [
+    false,
+    false,
+    false,
+    false,
+]
+roles = [
+    "student",
+    "student",
+    "mentor",
+    "mentor",
+]

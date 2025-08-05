@@ -30,7 +30,7 @@ async def DeleteTC(ctx, name):
     #go through each text channel. If channel name matches name, delete channel and return
     for ch in category.text_channels:
         if ch.name == "general" or ch.name == "admin":
-            ctx.send(f"{name} is a protected channel")
+            await ctx.send(f"{name} is a protected channel")
         elif ch.name == name:
             await ch.delete()
             await ctx.send(f"{name} has been deleted")
@@ -219,3 +219,49 @@ async def Remove(ctx, member: discord.Member=None, *, group_names=None):
                 await ctx.send(f"Error removing {role.name}: {e}")
         else:
             await ctx.send(f"Group '{group}' not found.")
+
+async def GetTokens(ctx, *, group_name):
+    if ctx.channel.name != "superadminchat":
+        await ctx.send("This command must be used in the #superadminchat channel.")
+        return
+
+    tokens_file = os.getenv("TOKENS", "group_tokens.toml")
+
+    if not os.path.exists(tokens_file):
+        await ctx.author.send("Token file not found.")
+        return
+
+    try:
+        with open(tokens_file, "rb") as f:
+            token_data = tomllib.load(f)
+
+        group = token_data.get(group_name)
+        if not group:
+            await ctx.author.send(f"No token group found with the name '{group_name}'.")
+            return
+
+        tokens_list = group.get("tokens", [])
+        used_list = group.get("used", [])
+        roles_list = group.get("roles", [])
+
+        if not tokens_list:
+            await ctx.author.send(f"No tokens exist for the group '{group_name}'.")
+            return
+
+        lines = []
+        for i, token in enumerate(tokens_list):
+            role = roles_list[i].capitalize()
+            status = "Used" if used_list[i] else "Unused"
+            lines.append(f"{i + 1}. {token} - {role} - {status}")
+
+        # Break into chunks to avoid Discord's message limit
+        chunk_size = 25
+        for i in range(0, len(lines), chunk_size):
+            chunk = lines[i:i + chunk_size]
+            await ctx.author.send("\n".join(chunk))
+
+        await ctx.send("Token list has been sent to your direct messages.")
+
+    except Exception as e:
+        await ctx.send("An error occurred while retrieving the tokens.")
+        print(f"[ERROR] GetTokens: {e}")
