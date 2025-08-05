@@ -133,10 +133,10 @@ async def Links(ctx, role_name: str, setting: str, ):
     elif setting == 'off':
         link_control[ctx.guild.id][role.id] = False
 
-# admin must be in the chat to clear messages
+
 @bot.command()
 @commands.has_any_role(SUPERADMINROLE,MentorRole)
-async def Clear(ctx, amount:str): # clears a number of messages
+async def Clear(ctx, amount:str): 
     if amount.lower() == 'all':
         await ctx.channel.purge()
         return
@@ -149,14 +149,14 @@ async def Clear(ctx, amount:str): # clears a number of messages
             await ctx.send("Please enter number that is greater than 0.")
             return
         else:
-            await ctx.channel.purge(limit = amount + 1) # +1 to include the bot command
+            await ctx.channel.purge(limit = amount + 1) 
 
 @bot.command()
 async def Remove(ctx,member: discord.Member,*,group_name=None):
     if ctx.channel.name != 'admin':
         await ctx.send("Wrong channel")
         return
-    if member == ctx.author: # cannot remove oneself 
+    if member == ctx.author: 
         await ctx.send("You cannot remove youself.")
         return
     if not group_name:
