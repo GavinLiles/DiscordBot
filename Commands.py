@@ -132,49 +132,15 @@ async def DeleteCategory(ctx, message, bot, MENTORROLE):
             confirm = await bot.wait_for("message", check=lambda m: m.author == ctx.author and m.channel == ctx.channel)
 
             if confirm.content.strip().lower() == "yes":
-                deleted_channel_ids = [str(ch.id) for ch in category.channels]
-                for ch in category.channels:
-                    await ch.delete()
-                await category.delete()
-
-                try:
-                    mentor_role_name = f"{message} {MENTORROLE}"
-                    user_role_name = message
-
-                    mentor_role = discord.utils.get(ctx.guild.roles, name=mentor_role_name)
-                    user_role = discord.utils.get(ctx.guild.roles, name=user_role_name)
-
-                    if mentor_role:
-                        await mentor_role.delete()
-                    if user_role:
-                        await user_role.delete()
-
-                    category_name = message.strip()
-                    SuperAdmin.delete_group_tokens(category_name)
-
-                    slack_map_path = "channel_map.toml"
-                    if os.path.exists(slack_map_path):
-                        async with channel_map_lock:
-                            with open(slack_map_path, "rb") as f:
-                                data = tomllib.load(f)
-
-                            original = dict(data.get("channels", {}))
-                            updated = {k: v for k, v in original.items() if v not in deleted_channel_ids and k not in deleted_channel_ids}
-
-                            if updated != original:
-                                with open(slack_map_path, "wb") as f:
-                                    f.write(tomli_w.dumps({"channels": updated}).encode("utf-8"))
-
-                    await ctx.send(f"Category '{message}' and all associated resources were deleted.")
-                    return
-
-                except Exception as e:
-                    await ctx.send(f"Error during deletion: {e}")
-                    return
+                success, msg = await delete_group_category(ctx.guild, message.strip(), MENTORROLE)
+                await ctx.send(msg)
+                return
             else:
                 await ctx.send("Deletion cancelled.")
                 return
+
     await ctx.send("No matching category found.")
+
 
 #revokes a specific role from everyone
 async def RevokeRoles(ctx, message, bot):
@@ -264,3 +230,44 @@ async def GetTokens(ctx, *, group_name):
     except Exception as e:
         await ctx.send("An error occurred while retrieving the tokens.")
         print(f"[ERROR] GetTokens: {e}")
+
+async def delete_group_category(guild, category_name, MENTORROLE):
+    category = discord.utils.get(guild.categories, name=category_name)
+    if not category:
+        return False, "Category not found."
+
+    deleted_channel_ids = [str(ch.id) for ch in category.channels]
+    for ch in category.channels:
+        await ch.delete()
+    await category.delete()
+
+    # Delete associated roles
+    mentor_role_name = f"{category_name} {MENTORROLE}"
+    user_role_name = category_name
+
+    mentor_role = discord.utils.get(guild.roles, name=mentor_role_name)
+    user_role = discord.utils.get(guild.roles, name=user_role_name)
+
+    if mentor_role:
+        await mentor_role.delete()
+    if user_role:
+        await user_role.delete()
+
+    # Delete from group token file
+    SuperAdmin.delete_group_tokens(category_name)
+
+    # Clean up Slack channel map
+    slack_map_path = "channel_map.toml"
+    if os.path.exists(slack_map_path):
+        async with channel_map_lock:
+            with open(slack_map_path, "rb") as f:
+                data = tomllib.load(f)
+
+            original = dict(data.get("channels", {}))
+            updated = {k: v for k, v in original.items() if v not in deleted_channel_ids and k not in deleted_channel_ids}
+
+            if updated != original:
+                with open(slack_map_path, "wb") as f:
+                    f.write(tomli_w.dumps({"channels": updated}).encode("utf-8"))
+
+    return True, f"Category '{category_name}' and all associated resources were deleted."
