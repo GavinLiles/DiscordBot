@@ -6,6 +6,7 @@ from discord.ext import commands
 from dotenv import load_dotenv
 import SuperAdmin
 import Commands
+import re
 import tokens
 from slack import (
     init_slack_app,
@@ -65,17 +66,13 @@ async def on_message(message):
     if message.channel.name == SUPERADMINCHAT and any(role.name == SUPERADMINROLE for role in message.author.roles):
         await handle_superadmin_commands(message)
 
-    link_setting = link_control.get(message.guild.id, {})
-    if any(scheme in message.content for scheme in ('http://', 'https://')):
-        for role in message.author.roles:
-            if link_setting.get(role.id) is False:
-                try:
-                    await message.delete()
-                    warning = f"{message.author.mention}, links are currently disabled for your role '{role.name}'."
-                    await message.channel.send(warning, delete_after=5)
-                except Exception as e:
-                    print(f"Error deleting message or sending warning: {e}")
-                break
+    if(islink(message.content)):
+        perms = message.channel.permissions_for(message.author)
+        if not perms.embed_links:
+            try:
+                await message.delete()
+            except:
+                pass
 
     await bot.process_commands(message)
 
@@ -95,18 +92,15 @@ async def RevokeRoles(ctx, *, message):
     await Commands.RevokeRoles(ctx, message, bot)
 
 @bot.command()
-@commands.has_any_role("SuperAdmin")
 async def Remove(ctx, member: discord.Member = None, *, group_names = None):
     await Commands.Remove(ctx, member, group_names=group_names)
 
 @bot.command()
-@commands.has_any_role("SuperAdmin")
-async def Links(ctx, role_name: str, setting: str):
-    await Commands.Links(ctx, link_control, role_name, setting)
+async def Links(ctx, setting: str):
+    await Commands.Links(ctx, setting)
 
 # SuperAdmin and Mentor commands
 @bot.command()
-@commands.has_any_role("SuperAdmin", "MENTORROLE")
 async def Clear(ctx, amount: str):
     await Commands.Clear(ctx, amount)
 
@@ -131,6 +125,17 @@ async def DeleteVC(ctx, *, name):
 async def GetTokens(ctx, *, group_name):
     await Commands.GetTokens(ctx, group_name=group_name)
 
+def islink(link) -> bool: 
+    link_regex = re.compile(
+        r"""(?xi)
+        \b(
+            (?:[a-z][a-z0-9+\-.]*://)      # any scheme:// (http, https, ftp, etc.)
+            | www\d{0,3}[.]                # www., www1.
+            | [a-z0-9.\-]+\.[a-z]{2,}      # bare domain (example.com)
+        )
+        """, re.VERBOSE | re.IGNORECASE
+    )
+    return bool(link_regex.search(link))
 
 async def start_bridge():
     socket_handler = get_socket_handler(SLACK_APP_TOKEN)

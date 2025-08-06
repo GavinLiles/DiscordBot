@@ -76,29 +76,34 @@ async def DeleteVC(ctx, name):
     await ctx.send("Channel does not exist")
     
 #This will turn links on or off for roles
-async def Links(ctx, link_control,role_name:str,setting: str):
+async def Links(ctx, setting: str):
     #the command is used only in the 'superadminchat' channel
-    if ctx.channel.name != 'superadminchat':
-        await ctx.send("This command must be used in the #superadminchat channel.")
+    if ctx.channel.name != 'admin':
         return
     
       # try to find the role object by its name in the server
-    role = discord.utils.get(ctx.guild.roles, name=role_name)
-
+    category = ctx.channel.category
+    role = discord.utils.get(ctx.guild.roles, name=category.name)
     setting = setting.lower()
 
-    if not role:
-        await ctx.send(f"Role '{role_name}' not found.")
+    if not category:
+        await ctx.send(f"Role '{category.name}' not found.")
         return
     if setting not in ['on', 'off']:
         await ctx.send("Invalid setting. Use !Links role_name on|off.")
         return
-    
-     # initialize the dictionary for the guild in link_control if it doesn't exist yet
-    if ctx.guild.id not in link_control:
-        link_control[ctx.guild.id] = {}
+    perms = role.permissions
+    perms.update(embed_links=(setting == 'on'))
 
-    link_control[ctx.guild.id][role.id] = (setting == 'on')
+     # initialize the dictionary for the guild in link_control if it doesn't exist yet
+    try:
+        await role.edit(permissions=perms)
+        await ctx.send(f"`embed_links` permission has been set to **{setting}** for role '{category.name}'.")
+    except discord.Forbidden:
+        await ctx.send("I do not have permission to edit that role.")
+    except Exception as e:
+        await ctx.send(f"Error: {e}")
+    
 
 #This will delete a certain amount or all messages in a channel
 async def Clear(ctx, amount : str):
@@ -221,8 +226,8 @@ async def RevokeRoles(ctx, message, bot):
 #Removes specified roles from a member.
 async def Remove(ctx, member: discord.Member=None, *, group_names=None):
     #the command is only used in the superadminchat channel
-    if ctx.channel.name != 'superadminchat':
-        await ctx.send("This command must be used in the #superadminchat channel.")
+    if ctx.channel.name != 'admin':
+        await ctx.send("This command must be used in the #admin channel.")
         return
     # check if a member is mentioned
     if member is None:
@@ -234,24 +239,25 @@ async def Remove(ctx, member: discord.Member=None, *, group_names=None):
         return
     # check group names are provided
     if not group_names:
-        await ctx.send("Please specify one or more group names.")
+        await ctx.send("Please specify a role.")
         return
 
-    group_list = group_names.split()
+    
     # loop through each group and try to remove the corresponding role
-    for group in group_list:
-        role = discord.utils.get(ctx.guild.roles, name=group)
-        if role:
-            try:
-                await member.remove_roles(role)
-            except discord.Forbidden:
-                 # handle case where bot lacks permission to remove the role
-                await ctx.send(f"Don't have permission to remove {role.name}.")
-            except discord.HTTPException as e:
-                # any other API-related error
-                await ctx.send(f"Error removing {role.name}: {e}")
-        else:
-            await ctx.send(f"Group '{group}' not found.")
+    
+    role = discord.utils.get(ctx.guild.roles, name=group_names)
+    if role:
+        try:
+            await member.remove_roles(role)
+            await ctx.send(f"{member.mention} was removed from {group_names}.")
+        except discord.Forbidden:
+                # handle case where bot lacks permission to remove the role
+            await ctx.send(f"Don't have permission to remove {role.name}.")
+        except discord.HTTPException as e:
+            # any other API-related error
+            await ctx.send(f"Error removing {role.name}: {e}")
+    else:
+        await ctx.send(f"Group '{group_names}' not found.")
 
 async def GetTokens(ctx, *, group_name):
     if ctx.channel.name != "superadminchat":
