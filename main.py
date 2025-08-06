@@ -94,7 +94,22 @@ async def DeleteCategory(ctx, *, message):
 async def RevokeRoles(ctx, *, message):
     await Commands.RevokeRoles(ctx, message, bot)
 
+@bot.command()
+@commands.has_any_role("SuperAdmin")
+async def Remove(ctx, member: discord.Member = None, *, group_names = None):
+    await Commands.Remove(ctx, member, group_names=group_names)
+
+@bot.command()
+@commands.has_any_role("SuperAdmin")
+async def Links(ctx, role_name: str, setting: str):
+    await Commands.Links(ctx, link_control, role_name, setting)
+
 # SuperAdmin and Mentor commands
+@bot.command()
+@commands.has_any_role("SuperAdmin", "MENTORROLE")
+async def Clear(ctx, amount: str):
+    await Commands.Clear(ctx, amount)
+
 @bot.command()
 async def CreateTC(ctx, *, name):
     await Commands.CreateTC(ctx, name)
@@ -111,24 +126,11 @@ async def CreateVC(ctx, *, name):
 async def DeleteVC(ctx, *, name):
     await Commands.DeleteVC(ctx, name)
 
-@bot.command()
-@commands.has_any_role("SuperAdmin")
-async def Links(ctx, role_name: str, setting: str):
-    await Commands.Links(ctx, link_control, role_name, setting)
-
-@bot.command()
-@commands.has_any_role("SuperAdmin", "MENTORROLE")
-async def Clear(ctx, amount: str):
-    await Commands.Clear(ctx, amount)
     
 @bot.command()
 async def GetTokens(ctx, *, group_name):
     await Commands.GetTokens(ctx, group_name=group_name)
 
-@bot.command()
-@commands.has_any_role("SuperAdmin")
-async def Remove(ctx, member: discord.Member = None, *, group_names = None):
-    await Commands.Remove(ctx, member, group_names=group_names)
 
 async def start_bridge():
     socket_handler = get_socket_handler(SLACK_APP_TOKEN)

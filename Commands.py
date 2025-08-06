@@ -8,56 +8,68 @@ import tomli_w
 import SuperAdmin
 #Creates a Voice channel
 async def CreateTC(ctx, name):
-    #do nothing if channel isn't admin
-    if ctx.channel.name != "admin":
+    if ctx.channel.name != "admin": #only allowing creation from 'admin' channel
         return
-    #set category to current category
+    
     category = ctx.channel.category
-    #check each channel if name exists and return if true
+
+    #check each channel if name exists
     if category and any(ch.name == name for ch in category.text_channels):
         await ctx.send(f"{name} already exists!")
         return
+    
     #create channel
     await ctx.guild.create_text_channel(name, category=category)
     await ctx.send(f"{name} created")
+
 #Deletes a text channel
 async def DeleteTC(ctx, name):
-    #do nothing and return if not in admin channel
-    if ctx.channel.name != "admin":
+    if ctx.channel.name != "admin": # only allow deletion from 'admin' channel
         return
+    
+    protected_channels = ["general", "admin"]
+
     #set category to current category
     category = ctx.channel.category
+
     #go through each text channel. If channel name matches name, delete channel and return
-    for ch in category.text_channels:
-        if ch.name == "general" or ch.name == "admin":
-            await ctx.send(f"{name} is a protected channel")
-        elif ch.name == name:
-            await ch.delete()
+    for txt_channel in category.text_channels:
+        if txt_channel.name == name:
+
+            if txt_channel.name in protected_channels:
+                await ctx.send(f"{name} is a protected channel")
+                return 
+            
+            await txt_channel.delete()
             await ctx.send(f"{name} has been deleted")
             return
 
     await ctx.send("Channel does not exist")
+
 #creates a voice channel
 async def CreateVC(ctx, name):
-    if ctx.channel.name != "admin":
+    if ctx.channel.name != "admin":  # only allows creation of voice channel in 'admin channel 
         return
 
     category = ctx.channel.category
+
     if category and any(ch.name == name for ch in category.voice_channels):
         await ctx.send(f"{name} already exists!")
         return
 
     await ctx.guild.create_voice_channel(name, category=category)
     await ctx.send(f"{name} created")
+
 #Deletes a voice channel
 async def DeleteVC(ctx, name):
     if ctx.channel.name != "admin":
         return
 
     category = ctx.channel.category
-    for ch in category.voice_channels:
-        if ch.name == name:
-            await ch.delete()
+    for voice_channel in category.voice_channels:
+
+        if voice_channel.name == name:
+            await voice_channel.delete()
             await ctx.send(f"{name} has been deleted")
             return
 
@@ -65,19 +77,27 @@ async def DeleteVC(ctx, name):
     
 #This will turn links on or off for roles
 async def Links(ctx, link_control,role_name:str,setting: str):
+    #the command is used only in the 'superadminchat' channel
     if ctx.channel.name != 'superadminchat':
-        await ctx.send("Wrong channel")
+        await ctx.send("This command must be used in the #superadminchat channel.")
         return
+    
+      # try to find the role object by its name in the server
     role = discord.utils.get(ctx.guild.roles, name=role_name)
+
     setting = setting.lower()
+
     if not role:
         await ctx.send(f"Role '{role_name}' not found.")
         return
     if setting not in ['on', 'off']:
         await ctx.send("Invalid setting. Use !Links role_name on|off.")
         return
+    
+     # initialize the dictionary for the guild in link_control if it doesn't exist yet
     if ctx.guild.id not in link_control:
         link_control[ctx.guild.id] = {}
+
     link_control[ctx.guild.id][role.id] = (setting == 'on')
 
 #This will delete a certain amount or all messages in a channel
@@ -93,26 +113,29 @@ async def Clear(ctx, amount : str):
     count = int(amount)
     if count == 0:
         await ctx.send("Please enter a number greater than 0.")
-    else:
-        await ctx.channel.purge(limit=count + 1)
+        return
+    
+    await ctx.channel.purge(limit=count + 1)
 
 #deletes a category, including the channels and roles connected to said category
 import SuperAdmin  # Ensure this is at the top of your file
 
 async def DeleteCategory(ctx, message, bot, MENTORROLE):
     if str(ctx.channel) != 'superadminchat':
+        await ctx.send("This command must be used in the #superadminchat channel.")
         return
-
+    # Look for a category with the given name
     for category in ctx.guild.categories:
         if message.strip().lower() == str(category).strip().lower():
             await ctx.send(f"Are you sure you want to delete the category '{message}'? (yes/no)")
-
+             # Wait for confirmation from the same user in the same channel
             confirm = await bot.wait_for(
                 "message",
                 check=lambda m: m.author == ctx.author and m.channel == ctx.channel
             )
 
             if confirm.content.strip().lower() == "yes":
+                 # Collect channel IDs before deleting 
                 deleted_channel_ids = [str(ch.id) for ch in category.channels]  # Save IDs before deleting
 
                 # Delete all channels inside the category
@@ -174,8 +197,7 @@ async def DeleteCategory(ctx, message, bot, MENTORROLE):
                 return
 
     await ctx.send("No matching category found.")
-
-        
+  
 #revokes a specific role from everyone
 async def RevokeRoles(ctx, message, bot):
     if str(ctx.channel) == 'superadminchat':
@@ -183,39 +205,50 @@ async def RevokeRoles(ctx, message, bot):
             role = discord.utils.get(ctx.guild.roles, name=message)
 
             await ctx.channel.send("Are you sure you want to remove the role? (yes/no)")
+
             confirm = await bot.wait_for("message", check=lambda m: m.author == ctx.author and m.channel == ctx.channel)
+            
             if confirm.content.lower() == "yes":
                 for member in ctx.guild.members:
                     if role in member.roles:
                         await member.remove_roles(role)
         except:
             print(f"role {message} not found")
+    else:
+        await ctx.send("This command must be used in the #superadminchat channel.")
+        return
 
 #Removes specified roles from a member.
 async def Remove(ctx, member: discord.Member=None, *, group_names=None):
+    #the command is only used in the superadminchat channel
     if ctx.channel.name != 'superadminchat':
-        await ctx.send("Wrong channel")
+        await ctx.send("This command must be used in the #superadminchat channel.")
         return
+    # check if a member is mentioned
     if member is None:
         await ctx.send("Please mention a member to remove roles from.")
         return
+    # prevent the command user from removing their own roles
     if member == ctx.author:
         await ctx.send("You cannot remove yourself.")
         return
+    # check group names are provided
     if not group_names:
         await ctx.send("Please specify one or more group names.")
         return
 
     group_list = group_names.split()
-
+    # loop through each group and try to remove the corresponding role
     for group in group_list:
         role = discord.utils.get(ctx.guild.roles, name=group)
         if role:
             try:
                 await member.remove_roles(role)
             except discord.Forbidden:
+                 # handle case where bot lacks permission to remove the role
                 await ctx.send(f"Don't have permission to remove {role.name}.")
             except discord.HTTPException as e:
+                # any other API-related error
                 await ctx.send(f"Error removing {role.name}: {e}")
         else:
             await ctx.send(f"Group '{group}' not found.")
@@ -224,7 +257,7 @@ async def GetTokens(ctx, *, group_name):
     if ctx.channel.name != "superadminchat":
         await ctx.send("This command must be used in the #superadminchat channel.")
         return
-
+    # Load the token file path from environment or use default
     tokens_file = os.getenv("TOKENS", "group_tokens.toml")
 
     if not os.path.exists(tokens_file):
@@ -234,7 +267,9 @@ async def GetTokens(ctx, *, group_name):
     try:
         with open(tokens_file, "rb") as f:
             token_data = tomllib.load(f)
+                # Get the token group by name
 
+        # Get the token group by name
         group = token_data.get(group_name)
         if not group:
             await ctx.author.send(f"No token group found with the name '{group_name}'.")
@@ -247,7 +282,7 @@ async def GetTokens(ctx, *, group_name):
         if not tokens_list:
             await ctx.author.send(f"No tokens exist for the group '{group_name}'.")
             return
-
+        # Format the token info
         lines = []
         for i, token in enumerate(tokens_list):
             role = roles_list[i].capitalize()
