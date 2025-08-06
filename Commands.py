@@ -122,7 +122,7 @@ async def Clear(ctx, amount : str):
 
 #deletes a category, including the channels and roles connected to said category
 async def DeleteCategory(ctx, message, bot, MENTORROLE):
-    if str(ctx.channel) != 'superadminchat':
+    if ctx.channel.name != 'superadminchat':
         await ctx.send("This command must be used in the #superadminchat channel.")
         return
 
@@ -144,7 +144,7 @@ async def DeleteCategory(ctx, message, bot, MENTORROLE):
 
 #revokes a specific role from everyone
 async def RevokeRoles(ctx, message, bot):
-    if str(ctx.channel) == 'superadminchat':
+    if ctx.channel.name == 'superadminchat':
         try:
             role = discord.utils.get(ctx.guild.roles, name=message)
             await ctx.channel.send("Are you sure you want to remove the role? (yes/no)")
