@@ -81,7 +81,7 @@ async def Links(ctx, setting: str):
     if ctx.channel.name != 'admin':
         return
     
-      # try to find the role object by its name in the server
+    # try to find the role object by its name in the server
     category = ctx.channel.category
     role = discord.utils.get(ctx.guild.roles, name=category.name)
     setting = setting.lower()
@@ -95,7 +95,6 @@ async def Links(ctx, setting: str):
     perms = role.permissions
     perms.update(embed_links=(setting == 'on'))
 
-     # initialize the dictionary for the guild in link_control if it doesn't exist yet
     try:
         await role.edit(permissions=perms)
         await ctx.send(f"`embed_links` permission has been set to **{setting}** for role '{category.name}'.")
@@ -243,7 +242,6 @@ async def Remove(ctx, member: discord.Member=None, *, group_names=None):
         return
 
     
-    # loop through each group and try to remove the corresponding role
     
     role = discord.utils.get(ctx.guild.roles, name=group_names)
     if role:

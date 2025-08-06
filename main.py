@@ -35,7 +35,7 @@ intents.guild_messages = True
 intents.members = True
 
 bot = commands.Bot(command_prefix="!", intents=intents)
-link_control = {}
+
 
 logging.basicConfig(filename="discord.log", encoding="utf-8", level=logging.INFO)
 
@@ -81,47 +81,68 @@ async def handle_superadmin_commands(message):
         await SuperAdmin.process_tml(bot, message, SUPERADMINCHAT, SUPERADMINROLE, MENTORROLE)
 
 # SuperAdmin-only commands
-@bot.command()
+
+# help: Deletes a category and all related channels roles, and tokens after confirmation.
+# usage: !DeleteCategory <category_name>
+@bot.command(help= "Deletes a category and all related channels roles, and tokens after confirmation.", usage="!DeleteCategory <category_name>" )
 @commands.has_any_role("SuperAdmin")
 async def DeleteCategory(ctx, *, message):
     await Commands.DeleteCategory(ctx, message, bot, MENTORROLE)
 
-@bot.command()
+# help: Removes a specified role from all members who currently have it in the server
+# usage: !RevokeRoles <role_name> 
+@bot.command(help="Removes a specified role from all members who currently have it in the server", usage="!RevokeRoles <role_name>")
 @commands.has_any_role("SuperAdmin")
 async def RevokeRoles(ctx, *, message):
     await Commands.RevokeRoles(ctx, message, bot)
 
-@bot.command()
+# help: Removes one specified roles from a mentioned member
+# uage: !Remove @member role_name
+@bot.command(help= "Removes one specified roles from a mentioned member", usage="!Remove @member role_name")
 async def Remove(ctx, member: discord.Member = None, *, group_names = None):
     await Commands.Remove(ctx, member, group_names=group_names)
 
-@bot.command()
+# help: Enables or disables the 'embed_links' permission for the role matching the current channel's category name.
+# usage: !Links on|off
+@bot.command(help="Enables or disables the 'embed_links' permission for the role matching the current channel's category name.",usage="!Links on|off")
 async def Links(ctx, setting: str):
     await Commands.Links(ctx, setting)
 
 # SuperAdmin and Mentor commands
-@bot.command()
+
+# help: Deletes a specified number of messages from the current channel, or all messages if "all" is provided
+# usage: !Clear 50 or !Clear all
+@bot.command(help="Deletes a specified number of messages from the current channel, or all messages if 'all' is provided",usage= "!Clear 50 or !Clear all")
 async def Clear(ctx, amount: str):
     await Commands.Clear(ctx, amount)
 
-@bot.command()
+# help: Creates a new text channel under the same category as the current channel
+# usage: !CreateTC <new_channel_name> 
+@bot.command(help="Creates a new text channel under the same category as the current channel", usage="!CreateTC <new_channel_name> " )
 async def CreateTC(ctx, *, name):
     await Commands.CreateTC(ctx, name)
 
-@bot.command()
+# help: Deletes a text channel with the given name under the current category
+# usage: !DeleteTC <channel_name>
+@bot.command(help= "Deletes a text channel with the given name under the current category", usage="!DeleteTC <channel_name>")
 async def DeleteTC(ctx, *, name):
     await Commands.DeleteTC(ctx, name)
 
-@bot.command()
+# help: Creates a new voice channel under the same category as the current channel.
+# usage: !CreateVC <voice_channel_name>
+@bot.command(help="Creates a new voice channel under the same category as the current channel.", usage= "!CreateVC <voice_channel_name>" )
 async def CreateVC(ctx, *, name):
     await Commands.CreateVC(ctx, name)
 
-@bot.command()
+# help:  Deletes a voice channel with the given name under the same category as the current channel
+# usage: !DeleteVC <voice_channel_name>
+@bot.command(help= "Deletes a voice channel with the given name under the same category as the current channel", usage="!DeleteVC <voice_channel_name>" )
 async def DeleteVC(ctx, *, name):
     await Commands.DeleteVC(ctx, name)
 
-    
-@bot.command()
+# help: sends token info to the user’s DMs.
+# usage: !GetTokens <group_name>
+@bot.command(help="sends token info to the users DMs.", usage="!GetTokens <group_name>")
 async def GetTokens(ctx, *, group_name):
     await Commands.GetTokens(ctx, group_name=group_name)
 
