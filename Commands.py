@@ -7,6 +7,11 @@ import tomllib
 import tomli_w
 import SuperAdmin
 from locking import group_tokens_lock, channel_map_lock
+import time
+import datetime
+import asyncio
+
+lock = asyncio.Lock()
 
 #Creates a Voice channel
 async def CreateTC(ctx, name):
@@ -280,3 +285,224 @@ async def delete_group_category(guild, category_name, MENTORROLE):
                     f.write(tomli_w.dumps({"channels": updated}).encode("utf-8"))
 
     return True, f"Category '{category_name}' and all associated resources were deleted."
+
+async def CreateAssignment(Scheduled_Assignments, file, assignment, group, ctx, bot, channel):
+    #check if group already has assignment with that name
+    if await CheckDuplicate(channel, Scheduled_Assignments, assignment, group, bot):
+        return
+    #ask user for given time and 
+    await ctx.send("Select time as MM/DD/YYYY HH:MM (2:30 pm should be 14:30)")
+    confirm = await bot.wait_for("message", check=lambda m: m.author == ctx.author and m.channel == ctx.channel)
+    #try if given valid date and time
+    try:
+        date_object = datetime.datetime.strptime(confirm.content, '%m/%d/%Y %H:%M')
+    except:
+        await ctx.send("Invalid time given")
+    #check if assigned time isn't before current time
+    if(date_object <= datetime.datetime.now()):
+        await ctx.send("That is too soon")
+        return
+    FormalDate= date_object.strftime('%B %d, %Y at %I:%M %p')
+    #write task data into file
+    with open(file, 'a') as f:
+        f.write(f"{assignment},{group},{confirm.content},{channel}\n")
+    #let user know assignment is assigned
+    await ctx.send(f"Assignment {assignment} is now set due on {date_object.strftime('%B %d, %Y at %I:%M %p')}")
+
+    if group == 'all':
+        for Category in ctx.guild.categories:
+            if Category.name != 'SuperAdmin' and Category.name != 'Text Channels':
+                Channel = discord.utils.get(Category.channels, name = 'general')
+                Target_Role = discord.utils.get(ctx.guild.roles, name = str(Category.name))
+                await Channel.send(f"{Target_Role.mention} {assignment} has been assigned. Due Date is {FormalDate}")
+    else:
+        Category = discord.utils.get(ctx.guild.categories, name=group)
+        Channel = discord.utils.get(Category.channels, name = 'general')
+        Target_Role = discord.utils.get(ctx.guild.roles, name = group)
+        await Channel.send(f"{Target_Role.mention} {assignment} has been assigned. Due Date is {FormalDate}")
+    #assignments.append({'assignment': assignment, 'date': date_object, 'FormalDate': date_object.strftime('%B %d, %Y at %I:%M %p'), 'position': len(assignments)-1})
+        
+    
+
+    task = asyncio.create_task(PrintReminders(Scheduled_Assignments, assignment, date_object, channel, group, file, bot))
+    Scheduled_Assignments.append([task, assignment, group, FormalDate])
+
+async def CheckDuplicate(channel, Scheduled_Assignments, assignment, group,bot):
+    #do if statment for superadminchat
+    for x in Scheduled_Assignments:
+        if x[1] == assignment and (x[2] == group):
+            channel = await bot.fetch_channel(channel)
+            await channel.send("Your group is already assigned an assignment called {assignment}")
+            return True
+    return False
+
+
+
+#sends reminders to group(s) about due date
+async def PrintReminders(Scheduled_Assignments, assignment, date_object, channel, group, file, bot):
+    #get channel id
+    channel = await bot.fetch_channel(channel)
+    #get guild
+    guild = channel.guild
+    try:
+        #create loop that goes on until the assignment date - current time is 0 or less
+        now = datetime.datetime.now().replace(second=0, microsecond=0)
+        while((date_object - now).total_seconds() > 0):
+            #if exactly 1 day left
+            if int((date_object - now).total_seconds() // 60) == 1440:
+                if group == 'all':
+                    for category in guild.categories:
+                        print(category.name)
+                        if category.name != 'SuperAdmin' and category.name != 'Text Channels':
+                            Channel = discord.utils.get(category.channels, name = 'general')
+                            print("check1")
+                            Target_Role = discord.utils.get(guild.roles, name = str(category.name))
+                            print(category.name)
+                            await Channel.send(f"{Target_Role.mention} {assignment} is due in 1 day!!!")
+
+                else: 
+                    await channel.send(f"{assignment} is due in 1 day!!!")
+                    #if one hour remains
+            if int((date_object - now).total_seconds() // 60) == 60:
+                if group == 'all':
+                    for category in guild.categories:
+                            print(category.name)
+                            if category.name != 'SuperAdmin' and category.name != 'Text Channels':
+                                Channel = discord.utils.get(category.channels, name = 'general')
+                                print("check1")
+                                Target_Role = discord.utils.get(guild.roles, name = str(category.name))
+                                print(category.name)
+                                await Channel.send(f"{Target_Role.mention} {assignment} is due in 1 hour!!!")
+                else:
+             
+                    await channel.send(f"{assignment} is due in 1 hour!!!")
+            #make this function sleep for a minute
+            await asyncio.sleep(60)
+            #get current time
+            now = datetime.datetime.now().replace(second=0, microsecond=0)
+        #this will remove task data from the file and list
+        for x in range(len(Scheduled_Assignments)):
+            async with lock:
+                if Scheduled_Assignments[x][1] == assignment and Scheduled_Assignments[x][2] == group:
+                    Scheduled_Assignments.pop(x)
+                    list = []
+                    with open(file, 'r') as f:
+                        for line in f:
+                            x = line.strip()
+                            x = x.split(',')
+                            
+                            if not (x[0] == assignment and x[1] == group):
+                                list.append(line)
+                    with open(file, 'w') as f:
+                        for line in list:
+                            f.write(f'{line}')
+                    return
+    except asyncio.CancelledError:
+        return
+    #This will show all assignment's related to the group
+async def ViewAssignments(ctx, Scheduled_Assignments):
+    #If running in SuperAdmin, check all assignments
+    if ctx.channel.category.name == 'SuperAdmin':
+        allprojects = ''
+        groupprojects = ''
+        for x in Scheduled_Assignments:
+            
+            
+            if x[2] == 'all':
+                allprojects += f'{x[1]} is due on {x[3]}\n'
+            else:
+                groupprojects += f'{x[2]} has {x[1]} due on {x[3]}\n'
+        message = ''
+        message += allprojects + groupprojects
+        await ctx.send(message)
+    #Check only assignments related to said group
+    else:       
+        message = "---Due Assignments---\n"
+        assignments = ''
+        for x in Scheduled_Assignments:
+            if x[2] == ctx.channel.category.name or x[2] == 'all':
+                assignments += f'{x[1]} is due on {x[3]}\n'
+        if assignments == '':
+            message = "Your group has no assignments!\n"
+        else:
+            message += assignments
+        await ctx.send(message)
+#This will remove an assignment and let the group(s) know
+async def CancelAssignment(ctx, message, Scheduled_Assignments, file, bot):
+    #Don't run if not in admin or SuperAdmin
+    if ctx.channel.name != 'admin' and ctx.channel.category.name != 'SuperAdmin':
+        return
+    #if in SuperAdmin, is it global or for a specific group
+    if ctx.channel.category.name == 'SuperAdmin':
+
+        await ctx.channel.send("Insert either group name or global")
+        #get user input
+        confirm = await bot.wait_for("message", check=lambda m: m.author == ctx.author and m.channel == ctx.channel)
+        print(confirm.content)
+        if confirm.content.strip().lower() == 'global':
+            
+            group = 'all'
+            message = 'Global assignment: ' + message
+        else:
+            group = confirm.content
+
+    else:
+        group = ctx.channel.category.name
+    try:
+        #go through each task info
+        for x in range(len(Scheduled_Assignments)):
+            async with lock:
+                #if found remove from list
+                if Scheduled_Assignments[x][1] == message and Scheduled_Assignments[x][2] == group:                
+                    Scheduled_Assignments[x][0].cancel()
+                    Scheduled_Assignments.pop(x)
+                    
+                    #let group(s) know about assignment cancel
+                    if group == 'all':
+                        for Category in ctx.guild.categories:
+                        
+                            if Category.name != 'SuperAdmin' and Category.name != 'Text Channels':
+                                Channel = discord.utils.get(Category.channels, name = 'general')
+                                Target_Role = discord.utils.get(ctx.guild.roles, name = str(Category.name))
+                                await Channel.send(f"{Target_Role.mention} {message} has been canceled!") 
+                    else:    
+                        Category = discord.utils.get(ctx.guild.categories, name=group)
+                        Channel = discord.utils.get(Category.channels, name = 'general')
+                        Target_Role = discord.utils.get(ctx.guild.roles, name = group)
+                        await ctx.send(f"{message} has been canceled!")
+                        await Channel.send(f"{Target_Role.mention} {message} has been canceled!")
+                    #Get all task data from file except current task and write to file with new data
+                    list = []
+                    with open(file, 'r') as f:
+                        for line in f:
+                            x = line.strip()
+                            x = x.split(',')
+                            if not ((x[0] == message) and x[1] == group):
+                                list.append(line)
+                    with open(file, 'w') as f:
+                        for line in list:
+                            f.write(f'{line}')
+                    return
+        if ctx.channel.category.name == 'SuperAdmin':
+            await ctx.send(f"Either {message} isn't real or you specified the wrong group")
+        else:
+            await ctx.send(f"{message} assignment wasn't found")
+    except:   
+        #If file doesn't exist
+        await ctx.send(f"{message} does not exist")
+#this creates the assignments from a file
+async def AssignmentFile(file, Scheduled_Assignments, bot):
+    try:
+        with open(file, 'r') as f:
+            for line in f:
+                line = line.strip()
+                line = line.split(',')
+                assignment, group, date_object, channel = line
+                date_object = datetime.datetime.strptime(date_object, '%m/%d/%Y %H:%M')
+                FormalDate= date_object.strftime('%B %d, %Y at %I:%M %p')
+                task = asyncio.create_task(PrintReminders(Scheduled_Assignments, assignment, date_object, channel, group, file, bot))
+                Scheduled_Assignments.append([task, assignment, group, FormalDate])
+                
+
+    except:
+        return

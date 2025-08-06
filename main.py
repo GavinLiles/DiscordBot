@@ -35,7 +35,10 @@ intents.guild_messages = True
 intents.members = True
 
 bot = commands.Bot(command_prefix="!", intents=intents)
-
+#global list to hold tasks data
+Scheduled_Assignments = []
+#file that holds assignment data
+file = "Assignments.txt"
 #get the most recent slack to discord connections and get slack up
 load_channel_map()
 slack_app = init_slack_app(SLACK_TOKEN, bot, get_channel_map())
@@ -43,7 +46,8 @@ slack_app = init_slack_app(SLACK_TOKEN, bot, get_channel_map())
 @bot.event
 async def on_ready():
     print(f"Logged in as {bot.user}")
-
+    #Create assignments from file information
+    await Commands.AssignmentFile(file, Scheduled_Assignments, bot)
 # .event makes it so evertime there is a message in discord it will enter this function
 # so this one checks messages if it fits one of the conditions it will do the specified action
 @bot.event
@@ -76,8 +80,16 @@ async def on_message(message):
             except:
                 pass
     
-
-
+#decorator to check if role ends with given suffixes
+def has_any_role(*suffixes):
+    async def predicate(ctx):
+        user_role = [role.name for role in ctx.author.roles]
+        for role_name in user_role:
+            for suffix in suffixes:
+                if role_name.endswith(suffix):
+                    return True
+        return False
+    return commands.check(predicate)
 # SuperAdmin and Mentor commands
 
 # help: Removes one specified roles from a mentioned member
@@ -95,6 +107,7 @@ async def Links(ctx, setting: str):
 # help: Deletes a specified number of messages from the current channel, or all messages if "all" is provided
 # usage: !Clear 50 or !Clear all
 @bot.command(help="Deletes a specified number of messages from the current channel, or all messages if 'all' is provided",usage= "!Clear 50 or !Clear all")
+@has_any_role("SuperAdmin","MENTORROLE")
 async def Clear(ctx, amount: str):
     await Commands.Clear(ctx, amount)
 
@@ -121,6 +134,31 @@ async def CreateVC(ctx, *, name):
 @bot.command(help= "Deletes a voice channel with the given name under the same category as the current channel", usage="!DeleteVC <voice_channel_name>" )
 async def DeleteVC(ctx, *, name):
     await Commands.DeleteVC(ctx, name)
+
+@bot.command(help = "Creates an assignment with a due date and sends message to group", usage = "!CreateAssignment <assignment_name> (Bot will ask for date, type it as MM/DD/YYYY HH/MM (military time))")
+async def CreateAssignment(ctx, *, message):
+    channel = ctx.channel.id
+    #get assignment name
+    #add something so that if called in superadminchat, add global to assignment
+    assignment = message
+    #get current group
+    #change it so that group is all if in SuperAdmin chat
+    group = ctx.channel.category.name
+    print(ctx.channel.name)
+    if ctx.channel.name == 'superadminchat':
+        group = 'all'
+        assignment = 'Global assignment: ' + message
+    print("Testing 2.0")
+    await Commands.CreateAssignment(Scheduled_Assignments, file, assignment, group, ctx, bot, channel)  
+
+@bot.command(help = "Shows group all their assignments and their due dates", usage = "!ViewAssignments")
+async def ViewAssignments(ctx):
+    await Commands.ViewAssignments(ctx, Scheduled_Assignments)  
+
+@bot.command(help = "Removes the assignment and sends amessage to the group", usage = "!CancelAssignment <assignment_name> (if superadmin, will ask user to specify group name or global)")
+async def CancelAssignment(ctx, *, message):
+    await Commands.CancelAssignment(ctx, message, Scheduled_Assignments, file, bot)
+
 
 
 def islink(link) -> bool: 
