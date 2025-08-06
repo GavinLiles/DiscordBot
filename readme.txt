@@ -62,6 +62,7 @@ File Structure:
 - .env                 : Environment variables (not committed to source control)
 
 Credits:
+Yarely Torres
 Gavin Liles
 Ryan Franscis
 

@@ -91,6 +91,31 @@ def has_any_role(*suffixes):
                     return True
         return False
     return commands.check(predicate)
+# SuperAdmin-only commands
+
+# help: Deletes a category and all related channels roles, and tokens after confirmation.
+# usage: !DeleteCategory <category_name>
+@bot.command(help= "Deletes a category and all related channels roles, and tokens after confirmation.", usage="!DeleteCategory <category_name>" )
+@commands.has_any_role("SuperAdmin")
+async def DeleteCategory(ctx, *, message):
+    await Commands.DeleteCategory(ctx, message, bot, MENTORROLE)
+
+# help: Removes a specified role from all members who currently have it in the server
+# usage: !RevokeRoles <role_name> 
+@bot.command(help="Removes a specified role from all members who currently have it in the server", usage="!RevokeRoles <role_name>")
+@commands.has_any_role("SuperAdmin")
+async def RevokeRoles(ctx, *, message):
+    await Commands.RevokeRoles(ctx, message, bot)
+
+
+
+
+# help: sends token info to the user’s DMs.
+# usage: !GetTokens <group_name>
+@bot.command(help="sends token info to the users DMs.", usage="!GetTokens <group_name>")
+async def GetTokens(ctx, *, group_name):
+    await Commands.GetTokens(ctx, group_name=group_name)
+
 # SuperAdmin and Mentor commands
 
 # help: Removes one specified roles from a mentioned member
@@ -98,6 +123,7 @@ def has_any_role(*suffixes):
 @bot.command(help= "Removes one specified roles from a mentioned member", usage="!Remove @member role_name")
 async def Remove(ctx, member: discord.Member = None, *, group_names = None):
     await Commands.Remove(ctx, member, group_names=group_names)
+
 
 # help: Enables or disables the 'embed_links' permission for the role matching the current channel's category name.
 # usage: !Links on|off
@@ -108,7 +134,6 @@ async def Links(ctx, setting: str):
 # help: Deletes a specified number of messages from the current channel, or all messages if "all" is provided
 # usage: !Clear 50 or !Clear all
 @bot.command(help="Deletes a specified number of messages from the current channel, or all messages if 'all' is provided",usage= "!Clear 50 or !Clear all")
-@has_any_role("SuperAdmin","MENTORROLE")
 async def Clear(ctx, amount: str):
     await Commands.Clear(ctx, amount)
 
@@ -135,6 +160,8 @@ async def CreateVC(ctx, *, name):
 @bot.command(help= "Deletes a voice channel with the given name under the same category as the current channel", usage="!DeleteVC <voice_channel_name>" )
 async def DeleteVC(ctx, *, name):
     await Commands.DeleteVC(ctx, name)
+
+
 
 @bot.command(help = "Creates an assignment with a due date and sends message to group", usage = "!CreateAssignment <assignment_name> (Bot will ask for date, type it as MM/DD/YYYY HH/MM (military time))")
 async def CreateAssignment(ctx, *, message):
