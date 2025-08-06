@@ -72,7 +72,7 @@ async def process_token(message: discord.Message, mentor_role_label: str):
         except:
             pass
 
-
+# Sends a reply tagging the user then deletes it after 10 seconds.
 async def ephemeral_reply(message: discord.Message, content: str):
     try:
         reply = await message.channel.send(f"{message.author.mention} {content}")

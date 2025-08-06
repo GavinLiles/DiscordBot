@@ -81,19 +81,21 @@ def update_channel_map(slack_id: str, discord_channel_id: str):
     async def _update():
         async with channel_map_lock:
             try:
+                # load the files
                 if os.path.exists(CHANNEL_MAP_FILE):
                     with open(CHANNEL_MAP_FILE, "rb") as f:
                         data = tomllib.load(f)
                 else:
                     data = {"channels": {}}
-
+                # Add or update the Slack to Discord mapping
                 data.setdefault("channels", {})
                 data["channels"][slack_id] = discord_channel_id
-
+                
+                #write them back
                 with open(CHANNEL_MAP_FILE, "wb") as f:
                     f.write(tomli_w.dumps(data).encode("utf-8"))
 
-                # Update the in-memory CHANNEL_MAP live
+                # Update the live CHANNEL_MAP live
                 CHANNEL_MAP[slack_id] = discord_channel_id
                 CHANNEL_MAP[discord_channel_id] = slack_id
 

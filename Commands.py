@@ -190,25 +190,27 @@ async def Remove(ctx, member: discord.Member=None, *, group_names=None):
         await ctx.send(f"Group '{group_names}' not found.")
 
 async def GetTokens(ctx, *, group_name):
+    # must be used in superadminchat channel
     if ctx.channel.name != "superadminchat":
         await ctx.send("This command must be used in the #superadminchat channel.")
         return
 
     tokens_file = os.getenv("TOKENS", "group_tokens.toml")
-    if not os.path.exists(tokens_file):
-        await ctx.author.send("Token file not found.")
-        return
 
     try:
+        # lock token file access
         async with group_tokens_lock:
+            # try to open and load the file
             with open(tokens_file, "rb") as f:
                 token_data = tomllib.load(f)
 
+        # get group entry
         group = token_data.get(group_name)
         if not group:
             await ctx.author.send(f"No token group found with the name '{group_name}'.")
             return
 
+        # extract token info
         tokens_list = group.get("tokens", [])
         used_list = group.get("used", [])
         roles_list = group.get("roles", [])
@@ -217,12 +219,14 @@ async def GetTokens(ctx, *, group_name):
             await ctx.author.send(f"No tokens exist for the group '{group_name}'.")
             return
 
+        # format output lines
         lines = []
         for i, token in enumerate(tokens_list):
             role = roles_list[i].capitalize()
             status = "Used" if used_list[i] else "Unused"
             lines.append(f"{i + 1}. {token} - {role} - {status}")
 
+        # send tokens in chunks to avoid a stoppage
         chunk_size = 25
         for i in range(0, len(lines), chunk_size):
             chunk = lines[i:i + chunk_size]
@@ -230,6 +234,8 @@ async def GetTokens(ctx, *, group_name):
 
         await ctx.send("Token list has been sent to your direct messages.")
 
+    except FileNotFoundError:
+        await ctx.author.send("Token file not found.")
     except Exception as e:
         await ctx.send("An error occurred while retrieving the tokens.")
         print(f"[ERROR] GetTokens: {e}")

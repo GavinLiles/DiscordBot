@@ -18,7 +18,7 @@ from slack import (
 
 
 load_dotenv()
-
+#vars from enviorment file
 DISCORD_TOKEN = os.getenv("DISCORD_TOKEN")
 SLACK_TOKEN = os.getenv("SLACK_TOKEN")
 SLACK_APP_TOKEN = os.getenv("SLACK_APP_TOKEN")
@@ -27,7 +27,7 @@ SUPERADMINROLE = os.getenv("SUPERADMINROLE", "SuperAdmin")
 MENTORROLE = os.getenv("MentorRole", "Mentor")
 TOKENSCHANNEL = os.getenv("TOKENSCHANNEL", "TokensChannel")
 TOKENS = os.getenv("TOKENS", "group_tokens.toml")
-
+# what the bot can edit/view
 intents = discord.Intents.default()
 intents.message_content = True
 intents.guilds = True
@@ -36,9 +36,7 @@ intents.members = True
 
 bot = commands.Bot(command_prefix="!", intents=intents)
 
-
-logging.basicConfig(filename="discord.log", encoding="utf-8", level=logging.INFO)
-
+#get the most recent slack to discord connections and get slack up
 load_channel_map()
 slack_app = init_slack_app(SLACK_TOKEN, bot, get_channel_map())
 
@@ -46,6 +44,8 @@ slack_app = init_slack_app(SLACK_TOKEN, bot, get_channel_map())
 async def on_ready():
     print(f"Logged in as {bot.user}")
 
+# .event makes it so evertime there is a message in discord it will enter this function
+# so this one checks messages if it fits one of the conditions it will do the specified action
 @bot.event
 async def on_message(message):
     if message.author == bot.user:
@@ -53,19 +53,21 @@ async def on_message(message):
 
     discord_channel_id = str(message.channel.id)
     slack_channel_id = get_channel_map().get(discord_channel_id)
-
+    #if it is mapped to slack send the message to slack
     if slack_channel_id:
         await get_slack_app().client.chat_postMessage(
             channel=slack_channel_id,
             text=f"(Discord) {message.author.name}: {message.content}"
         )
-
+    #if a message is sent in the token channel move to process it
     if message.channel.name.lower() == TOKENSCHANNEL.lower():
         await tokens.process_token(message, MENTORROLE)
-
-    if message.channel.name == SUPERADMINCHAT and any(role.name == SUPERADMINROLE for role in message.author.roles):
-        await handle_superadmin_commands(message)
-
+    # Only process TOML file uploads in the SuperAdmin channel,
+    # and only if the message author has the SuperAdmin role.
+    if message.channel.name == SUPERADMINCHAT and message.attachments and any(role.name == SUPERADMINROLE for role in message.author.roles):
+        await SuperAdmin.process_tml(bot, message, SUPERADMINCHAT, SUPERADMINROLE, MENTORROLE)
+    #if its a link check if the user is allowed to post links if they are leave it
+    #if not delete it
     if(islink(message.content)):
         perms = message.channel.permissions_for(message.author)
         if not perms.embed_links:
@@ -73,28 +75,10 @@ async def on_message(message):
                 await message.delete()
             except:
                 pass
+    
 
-    await bot.process_commands(message)
 
-async def handle_superadmin_commands(message):
-    if message.attachments:
-        await SuperAdmin.process_tml(bot, message, SUPERADMINCHAT, SUPERADMINROLE, MENTORROLE)
-
-# SuperAdmin-only commands
-
-# help: Deletes a category and all related channels roles, and tokens after confirmation.
-# usage: !DeleteCategory <category_name>
-@bot.command(help= "Deletes a category and all related channels roles, and tokens after confirmation.", usage="!DeleteCategory <category_name>" )
-@commands.has_any_role("SuperAdmin")
-async def DeleteCategory(ctx, *, message):
-    await Commands.DeleteCategory(ctx, message, bot, MENTORROLE)
-
-# help: Removes a specified role from all members who currently have it in the server
-# usage: !RevokeRoles <role_name> 
-@bot.command(help="Removes a specified role from all members who currently have it in the server", usage="!RevokeRoles <role_name>")
-@commands.has_any_role("SuperAdmin")
-async def RevokeRoles(ctx, *, message):
-    await Commands.RevokeRoles(ctx, message, bot)
+# SuperAdmin and Mentor commands
 
 # help: Removes one specified roles from a mentioned member
 # uage: !Remove @member role_name
@@ -107,8 +91,6 @@ async def Remove(ctx, member: discord.Member = None, *, group_names = None):
 @bot.command(help="Enables or disables the 'embed_links' permission for the role matching the current channel's category name.",usage="!Links on|off")
 async def Links(ctx, setting: str):
     await Commands.Links(ctx, setting)
-
-# SuperAdmin and Mentor commands
 
 # help: Deletes a specified number of messages from the current channel, or all messages if "all" is provided
 # usage: !Clear 50 or !Clear all
@@ -140,11 +122,6 @@ async def CreateVC(ctx, *, name):
 async def DeleteVC(ctx, *, name):
     await Commands.DeleteVC(ctx, name)
 
-# help: sends token info to the user’s DMs.
-# usage: !GetTokens <group_name>
-@bot.command(help="sends token info to the users DMs.", usage="!GetTokens <group_name>")
-async def GetTokens(ctx, *, group_name):
-    await Commands.GetTokens(ctx, group_name=group_name)
 
 def islink(link) -> bool: 
     link_regex = re.compile(
