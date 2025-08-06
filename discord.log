@@ -1775,3 +1775,9 @@ INFO:discord.client:logging in using static token
 INFO:slack_bolt.AsyncApp:A new session (s_94001533815) has been established
 INFO:slack_bolt.AsyncApp:Bolt app is running!
 INFO:discord.gateway:Shard ID None has connected to Gateway (Session ID: b27326db98ac123ca6b67015a9bc7a69).
+INFO:discord.client:logging in using static token
+INFO:slack_bolt.AsyncApp:A new session (s_111417209719) has been established
+INFO:slack_bolt.AsyncApp:Bolt app is running!
+INFO:discord.gateway:Shard ID None has connected to Gateway (Session ID: e36bd510afd1a492660c4c66366a05c6).
+WARNING:discord.http:We are being rate limited. POST https://discord.com/api/v10/channels/1377739818234282167/messages/bulk-delete responded with 429. Retrying in 2.93 seconds.
+WARNING:discord.http:We are being rate limited. POST https://discord.com/api/v10/channels/1377739818234282167/messages/bulk-delete responded with 429. Retrying in 2.96 seconds.

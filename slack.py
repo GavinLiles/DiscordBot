@@ -4,20 +4,25 @@ from slack_bolt.adapter.socket_mode.aiohttp import AsyncSocketModeHandler
 import tomli_w
 import os
 import tomllib
+import asyncio
+from locking import channel_map_lock
 
+# Global instances for Slack app and socket handler
 SLACK_APP = None
 SOCKET_HANDLER = None
+
+# Path to the local TOML file used for mapping Discord and Slack channels
 CHANNEL_MAP_FILE = "channel_map.toml"
 CHANNEL_MAP = {}
 
-# Initializes the Slack app with the token and channeels it should connect to in discord
+# Initializes the Slack app with the token and channels it should connect to in Discord
 def init_slack_app(slack_token, bot, channel_map):
     global SLACK_APP
 
     SLACK_APP = AsyncApp(token=slack_token)
 
+    # Looks for events from Slack, such as messages
     @SLACK_APP.event("message")
-    #Looks for events from slack such as a message being sent in there
     async def handle_slack_message(event, say):
         if "bot_id" in event:
             return
@@ -39,15 +44,18 @@ def init_slack_app(slack_token, bot, channel_map):
                 await channel.send(f"(Slack) {display_name}: {text}")
 
     return SLACK_APP
-#getters
+
+# Returns the initialized Slack app instance
 def get_slack_app():
     return SLACK_APP
 
+# Initializes and returns the Slack socket handler
 def get_socket_handler(app_token):
     global SOCKET_HANDLER
     SOCKET_HANDLER = AsyncSocketModeHandler(SLACK_APP, app_token)
     return SOCKET_HANDLER
-#check for all connected channels
+
+# Loads the existing channel mappings from the TOML file into memory
 def load_channel_map():
     global CHANNEL_MAP
     if os.path.exists(CHANNEL_MAP_FILE):
@@ -60,31 +68,37 @@ def load_channel_map():
                     CHANNEL_MAP[discord_id] = slack_id  # Reverse mapping
         except Exception as e:
             print("Failed to reload channel map:", e)
-#getter for channel map
+
+# Returns the in-memory channel mapping dictionary
 def get_channel_map():
     return CHANNEL_MAP
-#Check to see if there is an update to the chanel map
+
+# Updates the TOML file and in-memory map to associate a Slack channel with a Discord channel
 def update_channel_map(slack_id: str, discord_channel_id: str):
     if not slack_id or not discord_channel_id:
         return
 
-    try:
-        if os.path.exists(CHANNEL_MAP_FILE):
-            with open(CHANNEL_MAP_FILE, "rb") as f:
-                data = tomllib.load(f)
-        else:
-            data = {"channels": {}}
+    async def _update():
+        async with channel_map_lock:
+            try:
+                if os.path.exists(CHANNEL_MAP_FILE):
+                    with open(CHANNEL_MAP_FILE, "rb") as f:
+                        data = tomllib.load(f)
+                else:
+                    data = {"channels": {}}
 
-        data.setdefault("channels", {})
-        data["channels"][slack_id] = discord_channel_id
+                data.setdefault("channels", {})
+                data["channels"][slack_id] = discord_channel_id
 
-        with open(CHANNEL_MAP_FILE, "wb") as f:
-            f.write(tomli_w.dumps(data).encode("utf-8"))
+                with open(CHANNEL_MAP_FILE, "wb") as f:
+                    f.write(tomli_w.dumps(data).encode("utf-8"))
 
-        # Update the in-memory CHANNEL_MAP live
-        CHANNEL_MAP[slack_id] = discord_channel_id
-        CHANNEL_MAP[discord_channel_id] = slack_id
+                # Update the in-memory CHANNEL_MAP live
+                CHANNEL_MAP[slack_id] = discord_channel_id
+                CHANNEL_MAP[discord_channel_id] = slack_id
 
-        print(f"Mapped Slack {slack_id} to Discord {discord_channel_id} (live update)")
-    except Exception as e:
-        print(f"Error writing to channel map: {e}")
+                print(f"Mapped Slack {slack_id} to Discord {discord_channel_id} (live update)")
+            except Exception as e:
+                print(f"Error writing to channel map: {e}")
+
+    asyncio.create_task(_update())

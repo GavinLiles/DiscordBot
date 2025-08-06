@@ -5,6 +5,8 @@ import tomli_w
 import secrets
 import asyncio
 import os
+from locking import group_tokens_lock
+
 TOKENS = os.getenv("TOKENS", "group_tokens.toml")
 
 async def create_group_structure(guild, cls, MentorRole, message, group_dump):
@@ -60,12 +62,11 @@ async def create_group_structure(guild, cls, MentorRole, message, group_dump):
     total_students = int(cls.get("students", 0))
     total_mentors = int(cls.get("mentor", 0))
 
-    append_or_create_group(group_name, num_students=total_students, num_mentors=total_mentors)
+    await append_or_create_group(group_name, num_students=total_students, num_mentors=total_mentors)
 
     return category
 
-
-def delete_group_tokens(group_name: str) -> None:
+async def delete_group_tokens(group_name: str) -> None:
     print(f"Deleting group: '{group_name}' from token file: {TOKENS}")
 
     if not os.path.exists(TOKENS):
@@ -73,94 +74,77 @@ def delete_group_tokens(group_name: str) -> None:
         return
 
     try:
-        with open(TOKENS, "rb") as infile:
-            tokens_data = tomllib.load(infile)
-            print(f"Groups currently in file: {list(tokens_data.keys())}")
+        async with group_tokens_lock:
+            with open(TOKENS, "rb") as infile:
+                tokens_data = tomllib.load(infile)
+                print(f"Groups currently in file: {list(tokens_data.keys())}")
 
-        if group_name in tokens_data:
-            del tokens_data[group_name]
-            print(f"Group '{group_name}' removed from in-memory data.")
+            if group_name in tokens_data:
+                del tokens_data[group_name]
+                print(f"Group '{group_name}' removed from in-memory data.")
 
-            with open(TOKENS, "wb") as outfile:
-                outfile.write(tomli_w.dumps(tokens_data).encode("utf-8"))
-            print("Token file updated successfully.")
+                with open(TOKENS, "wb") as outfile:
+                    outfile.write(tomli_w.dumps(tokens_data).encode("utf-8"))
+                print("Token file updated successfully.")
 
-            # Confirm deletion
-            with open(TOKENS, "rb") as verify:
-                check_data = tomllib.load(verify)
-                if group_name not in check_data:
-                    print(f"Group '{group_name}' deletion confirmed.")
-                else:
-                    print(f"Warning: Group '{group_name}' still exists after attempted deletion.")
-        else:
-            print(f"Group '{group_name}' not found in token file.")
+                with open(TOKENS, "rb") as verify:
+                    check_data = tomllib.load(verify)
+                    if group_name not in check_data:
+                        print(f"Group '{group_name}' deletion confirmed.")
+                    else:
+                        print(f"Warning: Group '{group_name}' still exists after attempted deletion.")
+            else:
+                print(f"Group '{group_name}' not found in token file.")
     except Exception as e:
         print(f"Error while deleting group tokens: {e}")
 
 
+async def append_or_create_group(group_name: str, num_students: int = 0, num_mentors: int = 0, tokens_file: str = TOKENS) -> None:
+    async with group_tokens_lock:
+        if os.path.exists(tokens_file):
+            with open(tokens_file, "rb") as f:
+                token_data = tomllib.load(f)
+        else:
+            token_data = {}
 
-def append_or_create_group(group_name: str, num_students: int = 0, num_mentors: int = 0, tokens_file: str = TOKENS) -> None:
-    # Load existing tokens
-    if os.path.exists(tokens_file):
-        with open(tokens_file, "rb") as f:
-            token_data = tomllib.load(f)
-    else:
-        token_data = {}
+        if group_name not in token_data:
+            token_data[group_name] = {
+                "tokens": [],
+                "used": [],
+                "roles": []
+            }
 
-    # Create group if it doesn't exist
-    if group_name not in token_data:
-        token_data[group_name] = {
-            "tokens": [],
-            "used": [],
-            "roles": []
-        }
+        for _ in range(num_students):
+            token_data[group_name]["tokens"].append(secrets.token_hex(32))
+            token_data[group_name]["used"].append(False)
+            token_data[group_name]["roles"].append("student")
 
-    # Append student tokens
-    for _ in range(num_students):
-        token_data[group_name]["tokens"].append(secrets.token_hex(32))
-        token_data[group_name]["used"].append(False)
-        token_data[group_name]["roles"].append("student")
+        for _ in range(num_mentors):
+            token_data[group_name]["tokens"].append(secrets.token_hex(32))
+            token_data[group_name]["used"].append(False)
+            token_data[group_name]["roles"].append("mentor")
 
-    # Append mentor tokens
-    for _ in range(num_mentors):
-        token_data[group_name]["tokens"].append(secrets.token_hex(32))
-        token_data[group_name]["used"].append(False)
-        token_data[group_name]["roles"].append("mentor")
-
-    # Save back to file
-    with open(tokens_file, "wb") as f:
-        f.write(tomli_w.dumps(token_data).encode("utf-8"))
+        with open(tokens_file, "wb") as f:
+            f.write(tomli_w.dumps(token_data).encode("utf-8"))
 
     print(f"Group '{group_name}' updated. +{num_students} student(s), +{num_mentors} mentor(s)")
 
+
 async def process_tml(bot: discord.Client, message: discord.Message, SUPERADMINCHAT: str, SUPERADMINROLE: str, MentorRole: str):
-    #Loops through all attachments in a message
     for attachment in message.attachments:
-
-        #Extract and read file if it's a toml file
         if attachment.filename.endswith('.toml'):
-
-            #This takes the toml file and reads it in as binary data then decodes it to a string
             toml_text = (await attachment.read()).decode("utf-8")
 
-            #Open toml file and extract data
             try:
-                #parse the toml file and load it into a python dictionary
                 data = tomllib.loads(toml_text)
-
-                # create a global token dump for all groups
                 group_dump = {}
 
-                #Create a catagory for each group in the dict
                 for cls in data["groups"]:
-                    #check if the group name is already in use
                     existing = discord.utils.get(message.guild.categories, name=cls["name"])
 
-                    #creates group roles and categories
                     if not existing:
                         await create_group_structure(message.guild, cls, MentorRole, message, group_dump)
                     else:
-                        #if it exists give them a menu with option to select
                         await message.channel.send(
                             f"The `{cls['name']}` category already exists!\n"
                             f"Please choose how to proceed:\n"
@@ -175,12 +159,12 @@ async def process_tml(bot: discord.Client, message: discord.Message, SUPERADMINC
                                 timeout=60.0,
                                 check=lambda m: m.author == message.author and m.channel == message.channel and m.content.lower() in ["skip", "replace", "merge"]
                             )
-
                             user_choice = reply.content.lower()
                             await message.channel.send(f"You selected `{user_choice}`.")
                         except asyncio.TimeoutError:
                             user_choice = "skip"
                             await message.channel.send("Time expired. Defaulting to `skip`.")
+
                         if user_choice == "merge":
                             existing_channel_names = [ch.name for ch in existing.channels]
 
@@ -194,7 +178,6 @@ async def process_tml(bot: discord.Client, message: discord.Message, SUPERADMINC
                                 if extra not in existing_channel_names:
                                     await message.guild.create_voice_channel(extra, category=existing)
 
-                            
                             group_name = cls["name"]
                             total_students = int(cls.get("students", 0))
                             total_mentors = int(cls.get("mentor", 0))
@@ -212,7 +195,7 @@ async def process_tml(bot: discord.Client, message: discord.Message, SUPERADMINC
                             add_students = max(0, total_students - current_students)
                             add_mentors = max(0, total_mentors - current_mentors)
 
-                            append_or_create_group(group_name, num_students=add_students, num_mentors=add_mentors)
+                            await append_or_create_group(group_name, num_students=add_students, num_mentors=add_mentors)
 
                         elif user_choice == "replace":
                             category = discord.utils.get(message.guild.categories, name=cls["name"])
@@ -221,19 +204,15 @@ async def process_tml(bot: discord.Client, message: discord.Message, SUPERADMINC
                                     await ch.delete()
                                 await category.delete()
 
-                            # Delete associated roles if they exist
-                            mentor_role = discord.utils.get(message.guild.roles, name=f"{cls["name"]} {MentorRole}")
+                            mentor_role = discord.utils.get(message.guild.roles, name=f"{cls['name']} {MentorRole}")
                             user_role = discord.utils.get(message.guild.roles, name=cls["name"])
 
                             if mentor_role:
                                 await mentor_role.delete()
                             if user_role:
                                 await user_role.delete()
+
                             await create_group_structure(message.guild, cls, MentorRole, message, group_dump)
 
-
-
-            #print error message if error      
             except Exception as e:
                 await message.channel.send(f"Error parsing TOML: {e}")
-
