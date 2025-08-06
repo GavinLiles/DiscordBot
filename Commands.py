@@ -254,7 +254,7 @@ async def delete_group_category(guild, category_name, MENTORROLE):
         await user_role.delete()
 
     # Delete from group token file
-    SuperAdmin.delete_group_tokens(category_name)
+    await SuperAdmin.delete_group_tokens(category_name)
 
     # Clean up Slack channel map
     slack_map_path = "channel_map.toml"

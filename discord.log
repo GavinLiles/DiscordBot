@@ -1816,3 +1816,29 @@ Traceback (most recent call last):
   File "C:\Users\Gavin Liles\AppData\Local\Programs\Python\Python313\Lib\site-packages\discord\ext\commands\core.py", line 244, in wrapped
     raise CommandInvokeError(exc) from exc
 discord.ext.commands.errors.CommandInvokeError: Command raised an exception: NotFound: 404 Not Found (error code: 10008): Unknown Message
+ERROR:discord.ext.commands.bot:Ignoring exception in command None
+discord.ext.commands.errors.CommandNotFound: Command "CreateAssignment" is not found
+ERROR:discord.ext.commands.bot:Ignoring exception in command None
+discord.ext.commands.errors.CommandNotFound: Command "CreateAssignment" is not found
+ERROR:discord.ext.commands.bot:Ignoring exception in command None
+discord.ext.commands.errors.CommandNotFound: Command "CreateAssignment" is not found
+ERROR:discord.ext.commands.bot:Ignoring exception in command None
+discord.ext.commands.errors.CommandNotFound: Command "CreateAssignment" is not found
+ERROR:discord.ext.commands.bot:Ignoring exception in command None
+discord.ext.commands.errors.CommandNotFound: Command "CreateAssignment" is not found
+ERROR:discord.ext.commands.bot:Ignoring exception in command None
+discord.ext.commands.errors.CommandNotFound: Command "CreateAssignment" is not found
+ERROR:discord.ext.commands.bot:Ignoring exception in command None
+discord.ext.commands.errors.CommandNotFound: Command "CreateAssignment" is not found
+ERROR:discord.ext.commands.bot:Ignoring exception in command None
+discord.ext.commands.errors.CommandNotFound: Command "CreateAssignment" is not found
+ERROR:discord.ext.commands.bot:Ignoring exception in command None
+discord.ext.commands.errors.CommandNotFound: Command "CreateAssignment" is not found
+ERROR:discord.ext.commands.bot:Ignoring exception in command None
+discord.ext.commands.errors.CommandNotFound: Command "CreateAssignment" is not found
+ERROR:discord.ext.commands.bot:Ignoring exception in command None
+discord.ext.commands.errors.CommandNotFound: Command "CreateAssignment" is not found
+INFO:discord.client:logging in using static token
+INFO:slack_bolt.AsyncApp:A new session (s_179386518391) has been established
+INFO:slack_bolt.AsyncApp:Bolt app is running!
+INFO:discord.gateway:Shard ID None has connected to Gateway (Session ID: 58e40e538d0e3461e307a7fba62e54b2).

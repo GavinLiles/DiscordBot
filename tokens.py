@@ -52,9 +52,6 @@ async def process_token(message: discord.Message, mentor_role_label: str):
                 # mark the token as used and rewrite to the file
                 token_data[group_name]["used"][index] = True
                 async with group_tokens_lock:
-                    with open(TOKENS_FILE, "rb") as f:
-                        token_data = tomllib.load(f)
-
                     with open(TOKENS_FILE, "wb") as f:
                         f.write(tomli_w.dumps(token_data).encode("utf-8"))
 
