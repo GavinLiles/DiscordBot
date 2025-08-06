@@ -52,6 +52,7 @@ async def on_ready():
 # so this one checks messages if it fits one of the conditions it will do the specified action
 @bot.event
 async def on_message(message):
+    await bot.process_commands(message)
     if message.author == bot.user:
         return
 
