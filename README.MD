@@ -1,39 +1,38 @@
-==============================
 Project Title: 
-- Discord–Slack Bridge Bot
-==============================
+Discord–Slack Bridge Bot
+
 
 Description:
-- This bot syncs messages between Discord and Slack, automates the creation of group structures (roles, categories, channels), and manages token-based access for users (e.g., mentors and students).
-- It’s built using Python with support for discord.py, slack_bolt, and TOML configuration files for persistent storage and setup automation.
+ This bot syncs messages between Discord and Slack, automates the creation of group structures (roles, categories, channels), and manages token-based access for users (e.g., mentors and students).
+ It’s built using Python with support for discord.py, slack_bolt, and TOML configuration files for persistent storage and setup automation.
 
 Features:
-- Slack to Discord Message Relay:
-    - Bi-directional message sync between mapped Slack and Discord channels.
-    - Maintains mappings using channel_map.toml.
+Slack to Discord Message Relay:
+    Bi-directional message sync between mapped Slack and Discord channels.
+    Maintains mappings using channel_map.toml.
 
-- TOML-Based Group Setup:
-    - Upload .toml files to auto-create structured groups with text/voice channels, roles, and permissions.
-    - Supports merge/replace/skip logic when conflicts arise.
+TOML-Based Group Setup:
+    Upload .toml files to auto-create structured groups with text/voice channels, roles, and permissions.
+    Supports merge/replace/skip logic when conflicts arise.
 
-- Token System for Access:
-    - Students and mentors submit tokens in Discord to automatically receive roles.
-    - Tokens are tracked and marked as used after assignment.
+Token System for Access:
+    Students and mentors submit tokens in Discord to automatically receive roles.
+    Tokens are tracked and marked as used after assignment.
 
-- Admin Commands:
-    - !CreateTC, !DeleteVC, !Clear, !RevokeRoles, !Links on|off, !Remove, !DeleteCategory, etc.
-    - Protected channel names like "admin" and "superadminchat" ensure commands are restricted.
-    - !help gives all Commands.
-
-- File Locking:
-    - Uses asyncio.Lock to prevent concurrent write issues in TOML files.
+Admin Commands:
+    !CreateTC, !DeleteVC, !Clear, !RevokeRoles, !Links on|off, !Remove, !DeleteCategory, etc.
+    Protected channel names like "admin" and "superadminchat" ensure commands are restricted.
+    !help gives all Commands.
 
 Installation:
-- Python version: 3.13.5
-- Install dependencies with:
+ Python version: 3.13.5
+ Install dependencies with:
     pip install discord.py slack_bolt python-dotenv tomli tomli-w
 
 How to Run the Bot:
+0. Create a discord bot with administration rights and a slack bot with read and write permissions.
+   I recomend just using our tokens which are provided to you. 
+   
 1. Create a .env file with the following variables:
     DISCORD_TOKEN=your_discord_bot_token
     SLACK_TOKEN=your_slack_bot_token
